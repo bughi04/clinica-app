@@ -51,10 +51,10 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                 email: data.email,
                 telefon: data.telefon,
                 recomandare: data.recomandare || null,
-                nume_representant: data.representantid || null,
+                nume_representant: data.nume_representant || null,
 
                 // Tabel Adresa_pacienti
-                address: data.adress
+                address: data.address,
 
                 // Initialize empty arrays for new patients
                 allergies: [],
