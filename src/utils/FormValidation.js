@@ -111,10 +111,10 @@ class FormValidation {
                 return ['Da', 'Nu'].includes(value) || 'Răspuns invalid (Da/Nu)';
 
             case 'ultim_consult_stomatologic':
-                if (!value) return 'Data ultimului consult este obligatorie';
+                { if (!value) return 'Data ultimului consult este obligatorie';
                 const date = new Date(value);
                 const now = new Date();
-                return date <= now || 'Data nu poate fi în viitor';
+                return date <= now || 'Data nu poate fi în viitor'; }
 
             case 'nota_aspect_dentatie':
             case 'probleme_tratament_stomatologic_anterior':
