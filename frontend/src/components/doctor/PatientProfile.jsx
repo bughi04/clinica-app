@@ -32,14 +32,21 @@ class PatientProfile extends Component {
         this.setState({ loading: true });
         try {
             const response = await ApiService.getPatientProfile(this.props.patientId);
+            console.log('API Response:', response); // Debug API response
 
-            const { patient, ...questionnaireData } = response;
-
+            const { patient, questionnaires = [] } = response;
+            const questionnaire = questionnaires.length > 0
+                ? questionnaires[0]
+                : {}; // Get the first questionnaire, or an empty object if none exists
             this.setState({
                 patient,
-                questionnaire: questionnaireData, // Store the whole questionnaire object
+                questionnaire: {
+                    ...questionnaire,
+                    conditii_medicale: questionnaire.conditii_medicale || {}, // Provide a fallback for conditii_medicale
+                },
                 loading: false,
             });
+            console.log('Processed Questionnaire:', this.state.questionnaire);
         } catch (error) {
             console.error('Error loading patient profile:', error);
             this.setState({ loading: false });
@@ -129,12 +136,16 @@ class PatientProfile extends Component {
     renderMedicalInfo = () => {
         const { questionnaire } = this.state;
         if (!questionnaire) return <div>Nu există informații medicale disponibile.</div>;
-        console.log('Rendering Medical Info, Questionnaire:', questionnaire);
+
         const { conditii_medicale = {}, stare_generala = {}, examen_dentar = {} } = questionnaire;
+        console.log('Rendering Medical Info, Questionnaire:', questionnaire);
+
         // Handle Medical Conditions
         const filteredConditions = Object.entries(conditii_medicale).filter(
-            ([, value]) => value && value.toUpperCase() !== "NU" // Ensure non-empty values and exclude "NU"
+            ([, value]) => value && value !== "" && value.toUpperCase() !== "NU"
         );
+        console.log('Filtered Conditions:', filteredConditions); // Debugging
+
         return (
             <div>
                 {/* Render Medical Conditions */}
@@ -149,34 +160,6 @@ class PatientProfile extends Component {
                         <div>Nu sunt raportate condiții medicale.</div>
                     )}
                 </Card>
-
-                {/*<Card title="Tratamente Curente" style={{ marginBottom: 16 }}>*/}
-                {/*    {questionnaire.currentTreatments?.length > 0 ? (*/}
-                {/*        <div>*/}
-                {/*            {questionnaire.currentTreatments.map((treatment, index) => (*/}
-                {/*                <Tag key={index} color="green" icon={<MedicineBoxOutlined />} style={{ marginBottom: 4 }}>*/}
-                {/*                    {treatment}*/}
-                {/*                </Tag>*/}
-                {/*            ))}*/}
-                {/*        </div>*/}
-                {/*    ) : (*/}
-                {/*        <div>Nu sunt raportate tratamente curente.</div>*/}
-                {/*    )}*/}
-                {/*</Card>*/}
-
-                {/*<Card title="Alergii" style={{ marginBottom: 16 }}>*/}
-                {/*    {questionnaire.allergies?.length > 0 ? (*/}
-                {/*        <div>*/}
-                {/*            {questionnaire.allergies.map((allergy, index) => (*/}
-                {/*                <Tag key={index} color="red" icon={<ExclamationCircleOutlined />} style={{ marginBottom: 4 }}>*/}
-                {/*                    {allergy}*/}
-                {/*                </Tag>*/}
-                {/*            ))}*/}
-                {/*        </div>*/}
-                {/*    ) : (*/}
-                {/*        <div>Nu sunt raportate alergii.</div>*/}
-                {/*    )}*/}
-                {/*</Card>*/}
 
                 {/* Render General State */}
                 <Card title="Stare Generală" style={{ marginBottom: 16 }}>
@@ -201,9 +184,6 @@ class PatientProfile extends Component {
                 <Descriptions title="Informații Adiționale" bordered>
                     <Descriptions.Item label="Fumător">
                         {questionnaire.smoking ? 'Da' : 'Nu'}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Consumă alcool">
-                        {questionnaire.alcoholUse ? 'Da' : 'Nu'}
                     </Descriptions.Item>
                     <Descriptions.Item label="Sarcină (femei)">
                         {questionnaire.pregnancyStatus ? 'Da' : 'Nu'}
