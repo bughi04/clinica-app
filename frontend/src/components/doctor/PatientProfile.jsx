@@ -181,23 +181,6 @@ class PatientProfile extends Component {
                     </ul>
                 </Card>
 
-                <Descriptions title="Informații Adiționale" bordered>
-                    <Descriptions.Item label="Fumător">
-                        {questionnaire.smoking ? 'Da' : 'Nu'}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Sarcină (femei)">
-                        {questionnaire.pregnancyStatus ? 'Da' : 'Nu'}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Spitalizări recente">
-                        {questionnaire.recentHospitalizations ? 'Da' : 'Nu'}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Chirurgii recente">
-                        {questionnaire.recentSurgeries ? 'Da' : 'Nu'}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Probleme cardiace" span={2}>
-                        {questionnaire.heartIssues ? 'Da' : 'Nu'}
-                    </Descriptions.Item>
-                </Descriptions>
 
                 {questionnaire.otherComments && (
                     <Card title="Comentarii Adiționale" style={{ marginTop: 16 }}>

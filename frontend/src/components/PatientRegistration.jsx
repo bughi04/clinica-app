@@ -12,7 +12,22 @@ const PatientRegistration = ({ onComplete, onBack }) => {
     const { control, handleSubmit, formState: { errors }, watch, trigger } = useForm({
         mode: 'onChange',
         defaultValues: {
-            gen: 'M' // Default gender
+            firstname: "",  // Default empty string for all fields
+            surname: "",
+            CNP: "",
+            birthdate: "",
+            gen: "M",
+            email: "",
+            telefon: "",
+            judet: "",
+            localitate: "",
+            strada: "",
+            numar: "",
+            bloc: "",
+            scara: "",
+            apartament: "",
+            recomandare: "",
+            representantid: "",
         }
     });
 
@@ -25,6 +40,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
 
     const nextStep = async () => {
         const isValid = await trigger();
+        console.log('Trigger Validation Status:', isValid);
         if (isValid && step < steps.length - 1) {
             setStep(step + 1);
         }
