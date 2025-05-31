@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Input, Button, Space, Tag, Select, DatePicker } from 'antd';
 import { SearchOutlined, FilterOutlined, EyeOutlined } from '@ant-design/icons';
+import ApiService from "../../services/apiService.js";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -33,75 +34,24 @@ class PatientList extends Component {
 
     loadPatients = async (page = 1, pageSize = 10) => {
         this.setState({ loading: true });
-        try {
-            // Mock patients data
-            const mockPatients = [
-                {
-                    patientId: '1',
-                    fullName: 'Maria Popescu',
-                    email: 'maria.popescu@email.com',
-                    phone: '0740123456',
-                    allergies: ['Penicilină', 'Polen'],
-                    medicalConditions: ['Hipertensiune'],
-                    heartIssues: false,
-                    anestheticReactions: false,
-                    lastQuestionnaireDate: new Date().toISOString()
-                },
-                {
-                    patientId: '2',
-                    fullName: 'Ion Ionescu',
-                    email: 'ion.ionescu@email.com',
-                    phone: '0741234567',
-                    allergies: [],
-                    medicalConditions: ['Diabet tip 2'],
-                    heartIssues: true,
-                    anestheticReactions: false,
-                    lastQuestionnaireDate: new Date(Date.now() - 86400000).toISOString()
-                },
-                {
-                    patientId: '3',
-                    fullName: 'Ana Testescu',
-                    email: 'ana.test@email.com',
-                    phone: '0742345678',
-                    allergies: [],
-                    medicalConditions: [],
-                    heartIssues: false,
-                    anestheticReactions: false,
-                    lastQuestionnaireDate: new Date(Date.now() - 172800000).toISOString()
-                },
-                {
-                    patientId: '4',
-                    fullName: 'Gheorghe Vlad',
-                    email: 'gheorghe.vlad@email.com',
-                    phone: '0743456789',
-                    allergies: ['Latex'],
-                    medicalConditions: ['Astm'],
-                    heartIssues: false,
-                    anestheticReactions: true,
-                    lastQuestionnaireDate: new Date(Date.now() - 259200000).toISOString()
-                },
-                {
-                    patientId: '5',
-                    fullName: 'Elena Dumitrescu',
-                    email: 'elena.dumitrescu@email.com',
-                    phone: '0744567890',
-                    allergies: ['Ibuprofen'],
-                    medicalConditions: [],
-                    heartIssues: false,
-                    anestheticReactions: false,
-                    lastQuestionnaireDate: new Date(Date.now() - 345600000).toISOString()
-                }
-            ];
 
+        try {
+            // Fetch patient data using the ApiService
+            const patientData = await ApiService.getFormattedPatientList(page, pageSize);
+
+            const { patients, totalItems } = patientData;
+
+            // Update state with fetched data
             this.setState({
-                patients: mockPatients,
-                filteredPatients: mockPatients,
+                patients: patients,
+                filteredPatients: patients, // Initially show all patients
                 pagination: {
                     ...this.state.pagination,
-                    total: mockPatients.length,
-                    current: page
+                    total: totalItems,
+                    current: page,
+                    pageSize: pageSize,
                 },
-                loading: false
+                loading: false,
             });
         } catch (error) {
             console.error('Error loading patients:', error);

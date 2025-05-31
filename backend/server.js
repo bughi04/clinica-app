@@ -191,7 +191,11 @@ app.post('/api/patients', async (req, res) => {
 // Get patient by ID with all questionnaires
 app.get('/api/patients/:id', async (req, res) => {
     try {
-        const { id } = req.params;
+        const id = parseInt(req.params.id, 10);
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'Invalid patient ID' });
+        }
+        console.log('Received ID:', req.params.id);
         const patient = await models.Patient.findByPk(id, {
             include: [
                 {

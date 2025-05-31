@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Descriptions, Tag, Timeline, Alert, Tabs, Spin } from 'antd';
 import { ExclamationCircleOutlined, HeartOutlined, MedicineBoxOutlined } from '@ant-design/icons';
+import ApiService from "../../services/apiService.js";
 
 const { TabPane } = Tabs;
 
@@ -26,152 +27,21 @@ class PatientProfile extends Component {
     }
 
     loadPatientData = async () => {
-        if (!this.props.patientId) return;
+        if (!this.props.patientId) return; // Ensure a patientId is provided
 
         this.setState({ loading: true });
         try {
-            // Mock patient data based on patientId
-            const mockPatients = {
-                '1': {
-                    id: '1',
-                    fullName: 'Maria Popescu',
-                    birthDate: '1985-03-15',
-                    email: 'maria.popescu@email.com',
-                    phone: '0740123456',
-                    createdAt: '2024-01-15T10:00:00Z'
-                },
-                '2': {
-                    id: '2',
-                    fullName: 'Ion Ionescu',
-                    birthDate: '1978-07-22',
-                    email: 'ion.ionescu@email.com',
-                    phone: '0741234567',
-                    createdAt: '2024-02-10T14:30:00Z'
-                },
-                '3': {
-                    id: '3',
-                    fullName: 'Ana Testescu',
-                    birthDate: '1990-12-10',
-                    email: 'ana.test@email.com',
-                    phone: '0742345678',
-                    createdAt: '2024-03-05T09:15:00Z'
-                }
-            };
+            const response = await ApiService.getPatientProfile(this.props.patientId);
 
-            const mockQuestionnaires = {
-                '1': {
-                    patientId: '1',
-                    submissionDate: new Date().toISOString(),
-                    medicalConditions: ['Hipertensiune arterială'],
-                    currentTreatments: ['Enalapril 10mg'],
-                    allergies: ['Penicilină', 'Polen'],
-                    smoking: false,
-                    alcoholUse: false,
-                    pregnancyStatus: false,
-                    recentHospitalizations: false,
-                    recentSurgeries: false,
-                    heartIssues: false,
-                    anestheticReactions: false,
-                    bleedingProblems: false,
-                    otherComments: 'Pacientă cooperantă, fără alte observații medicale.'
-                },
-                '2': {
-                    patientId: '2',
-                    submissionDate: new Date(Date.now() - 86400000).toISOString(),
-                    medicalConditions: ['Diabet tip 2'],
-                    currentTreatments: ['Metformin 500mg', 'Insulină'],
-                    allergies: [],
-                    smoking: true,
-                    alcoholUse: false,
-                    pregnancyStatus: false,
-                    recentHospitalizations: true,
-                    recentSurgeries: false,
-                    heartIssues: true,
-                    anestheticReactions: false,
-                    bleedingProblems: false,
-                    otherComments: 'Pacient diabetic cu control glicemic instabil. Necesită monitorizare atentă.'
-                },
-                '3': {
-                    patientId: '3',
-                    submissionDate: new Date(Date.now() - 172800000).toISOString(),
-                    medicalConditions: [],
-                    currentTreatments: [],
-                    allergies: [],
-                    smoking: false,
-                    alcoholUse: false,
-                    pregnancyStatus: false,
-                    recentHospitalizations: false,
-                    recentSurgeries: false,
-                    heartIssues: false,
-                    anestheticReactions: false,
-                    bleedingProblems: false,
-                    otherComments: 'Pacientă sănătoasă, fără antecedente medicale relevante.'
-                }
-            };
-
-            const mockHistory = {
-                '1': [
-                    {
-                        id: 1,
-                        type: 'questionnaire',
-                        title: 'Chestionar medical completat',
-                        date: new Date().toISOString(),
-                        description: 'Chestionar medical și consimțământ GDPR semnat digital'
-                    },
-                    {
-                        id: 2,
-                        type: 'treatment',
-                        title: 'Consultație inițială',
-                        date: new Date(Date.now() - 86400000).toISOString(),
-                        description: 'Prima consultație, evaluare stare dentară generală'
-                    }
-                ],
-                '2': [
-                    {
-                        id: 1,
-                        type: 'questionnaire',
-                        title: 'Chestionar medical actualizat',
-                        date: new Date(Date.now() - 86400000).toISOString(),
-                        description: 'Actualizare date medicale - diabet tip 2 confirmat'
-                    },
-                    {
-                        id: 2,
-                        type: 'treatment',
-                        title: 'Tratament endodontic',
-                        date: new Date(Date.now() - 172800000).toISOString(),
-                        description: 'Tratament de canal molar inferior drept'
-                    },
-                    {
-                        id: 3,
-                        type: 'treatment',
-                        title: 'Control post-tratament',
-                        date: new Date(Date.now() - 259200000).toISOString(),
-                        description: 'Verificare cicatrizare și adaptare proteză'
-                    }
-                ],
-                '3': [
-                    {
-                        id: 1,
-                        type: 'questionnaire',
-                        title: 'Primul chestionar medical',
-                        date: new Date(Date.now() - 172800000).toISOString(),
-                        description: 'Înregistrare pacient nou - fără antecedente medicale'
-                    }
-                ]
-            };
-
-            const patient = mockPatients[this.props.patientId];
-            const questionnaire = mockQuestionnaires[this.props.patientId];
-            const medicalHistory = mockHistory[this.props.patientId] || [];
+            const { patient, ...questionnaireData } = response;
 
             this.setState({
                 patient,
-                questionnaire,
-                medicalHistory,
-                loading: false
+                questionnaire: questionnaireData, // Store the whole questionnaire object
+                loading: false,
             });
         } catch (error) {
-            console.error('Error loading patient data:', error);
+            console.error('Error loading patient profile:', error);
             this.setState({ loading: false });
         }
     };
@@ -259,49 +129,73 @@ class PatientProfile extends Component {
     renderMedicalInfo = () => {
         const { questionnaire } = this.state;
         if (!questionnaire) return <div>Nu există informații medicale disponibile.</div>;
-
+        console.log('Rendering Medical Info, Questionnaire:', questionnaire);
+        const { conditii_medicale = {}, stare_generala = {}, examen_dentar = {} } = questionnaire;
+        // Handle Medical Conditions
+        const filteredConditions = Object.entries(conditii_medicale).filter(
+            ([, value]) => value && value.toUpperCase() !== "NU" // Ensure non-empty values and exclude "NU"
+        );
         return (
             <div>
+                {/* Render Medical Conditions */}
                 <Card title="Condiții Medicale" style={{ marginBottom: 16 }}>
-                    {questionnaire.medicalConditions?.length > 0 ? (
-                        <div>
-                            {questionnaire.medicalConditions.map((condition, index) => (
-                                <Tag key={index} color="blue" style={{ marginBottom: 4 }}>
-                                    {condition}
-                                </Tag>
+                    {filteredConditions.length > 0 ? (
+                        <ul>
+                            {filteredConditions.map(([key, value]) => (
+                                <li key={key}>{key.replace(/_/g, ' ')}: {value}</li>
                             ))}
-                        </div>
+                        </ul>
                     ) : (
-                        <div>Nu sunt raportate condiții medicale cronice.</div>
+                        <div>Nu sunt raportate condiții medicale.</div>
                     )}
                 </Card>
 
-                <Card title="Tratamente Curente" style={{ marginBottom: 16 }}>
-                    {questionnaire.currentTreatments?.length > 0 ? (
-                        <div>
-                            {questionnaire.currentTreatments.map((treatment, index) => (
-                                <Tag key={index} color="green" icon={<MedicineBoxOutlined />} style={{ marginBottom: 4 }}>
-                                    {treatment}
-                                </Tag>
-                            ))}
-                        </div>
-                    ) : (
-                        <div>Nu sunt raportate tratamente curente.</div>
-                    )}
+                {/*<Card title="Tratamente Curente" style={{ marginBottom: 16 }}>*/}
+                {/*    {questionnaire.currentTreatments?.length > 0 ? (*/}
+                {/*        <div>*/}
+                {/*            {questionnaire.currentTreatments.map((treatment, index) => (*/}
+                {/*                <Tag key={index} color="green" icon={<MedicineBoxOutlined />} style={{ marginBottom: 4 }}>*/}
+                {/*                    {treatment}*/}
+                {/*                </Tag>*/}
+                {/*            ))}*/}
+                {/*        </div>*/}
+                {/*    ) : (*/}
+                {/*        <div>Nu sunt raportate tratamente curente.</div>*/}
+                {/*    )}*/}
+                {/*</Card>*/}
+
+                {/*<Card title="Alergii" style={{ marginBottom: 16 }}>*/}
+                {/*    {questionnaire.allergies?.length > 0 ? (*/}
+                {/*        <div>*/}
+                {/*            {questionnaire.allergies.map((allergy, index) => (*/}
+                {/*                <Tag key={index} color="red" icon={<ExclamationCircleOutlined />} style={{ marginBottom: 4 }}>*/}
+                {/*                    {allergy}*/}
+                {/*                </Tag>*/}
+                {/*            ))}*/}
+                {/*        </div>*/}
+                {/*    ) : (*/}
+                {/*        <div>Nu sunt raportate alergii.</div>*/}
+                {/*    )}*/}
+                {/*</Card>*/}
+
+                {/* Render General State */}
+                <Card title="Stare Generală" style={{ marginBottom: 16 }}>
+                    <ul>
+                        <li>În îngrijirea medic: {stare_generala.in_ingrijirea_medic || 'Nu'}</li>
+                        <li>Medicamente curente: {stare_generala.medicamente_curente || 'Nu'}</li>
+                        <li>Alergii: {stare_generala.lista_alergii || 'Nu sunt raportate alergii.'}</li>
+                        <li>Modificări recente în starea de sănătate: {stare_generala.modificari_recente || 'Nu'}</li>
+                    </ul>
                 </Card>
 
-                <Card title="Alergii" style={{ marginBottom: 16 }}>
-                    {questionnaire.allergies?.length > 0 ? (
-                        <div>
-                            {questionnaire.allergies.map((allergy, index) => (
-                                <Tag key={index} color="red" icon={<ExclamationCircleOutlined />} style={{ marginBottom: 4 }}>
-                                    {allergy}
-                                </Tag>
-                            ))}
-                        </div>
-                    ) : (
-                        <div>Nu sunt raportate alergii.</div>
-                    )}
+                {/* Render Dental Examination */}
+                <Card title="Examen Dentar" style={{ marginBottom: 16 }}>
+                    <ul>
+                        <li>Scrâșnit din dinți/inclestat maxilar: {examen_dentar.scrasnit_inclestat}</li>
+                        <li>Gingiile sângerează: {examen_dentar.sangereaza_gingiile}</li>
+                        <li>Sensibilitate dinți: {examen_dentar.sensibilitate_dinti}</li>
+                        <li>Probleme ortodontice: {examen_dentar.probleme_ortodontice}</li>
+                    </ul>
                 </Card>
 
                 <Descriptions title="Informații Adiționale" bordered>

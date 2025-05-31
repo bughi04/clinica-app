@@ -518,7 +518,7 @@ class ApiService {
     // Get formatted patient list for doctor interface with fallbacks
     static async getFormattedPatientList(page = 1, limit = 10, filters = {}) {
         try {
-            const response = await apiClient.get('/patients/formatted', {
+            const response = await apiClient.get('/patients', {
                 params: { page, limit, ...filters }
             });
 
