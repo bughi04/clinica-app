@@ -37,28 +37,28 @@ const PatientRegistration = ({ onComplete, onBack }) => {
             title: 'Informații Personale',
             subtitle: 'Date de identificare',
             icon: User,
-            color: 'from-blue-500 to-blue-600',
+            color: 'from-gray-600 to-gray-700',
             fields: ['firstname', 'surname', 'CNP', 'birthdate', 'gen']
         },
         {
             title: 'Date de Contact',
             subtitle: 'Email și telefon',
             icon: Phone,
-            color: 'from-emerald-500 to-emerald-600',
+            color: 'from-gray-500 to-gray-600',
             fields: ['email', 'telefon']
         },
         {
             title: 'Adresa',
             subtitle: 'Adresa de domiciliu',
             icon: MapPin,
-            color: 'from-purple-500 to-purple-600',
+            color: 'from-gray-700 to-gray-800',
             fields: ['judet', 'localitate', 'strada', 'numar']
         },
         {
             title: 'Informații Suplimentare',
             subtitle: 'Finalizare înregistrare',
             icon: CheckCircle,
-            color: 'from-orange-500 to-orange-600',
+            color: 'from-gray-600 to-gray-700',
             fields: ['recomandare', 'representantid']
         }
     ];
@@ -152,8 +152,8 @@ const PatientRegistration = ({ onComplete, onBack }) => {
 
     if (showSuccess) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-6">
-                <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-10 w-full max-w-md text-center animate-scale-in">
+            <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md text-center animate-scale-in">
                     <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 animate-glow">
                         <CheckCircle className="w-10 h-10 text-white" />
                     </div>
@@ -174,18 +174,18 @@ const PatientRegistration = ({ onComplete, onBack }) => {
     }
 
     return (
-        <div className="min-h-screen p-6 relative overflow-hidden">
+        <div className="min-h-screen p-6 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-200 to-transparent rounded-full blur-3xl animate-float"></div>
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-200 to-transparent rounded-full blur-3xl animate-float-delay"></div>
+            <div className="absolute inset-0 opacity-5">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-gray-400 rounded-full blur-3xl animate-float"></div>
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-gray-500 rounded-full blur-3xl animate-float-delay"></div>
             </div>
 
             <div className="max-w-4xl mx-auto relative z-10">
-                <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-slide-in-up">
+                <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden animate-slide-in-up">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/50 to-purple-600/50 animate-morph"></div>
+                    <div className="bg-gradient-to-r from-gray-700 to-gray-800 p-8 text-white relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-gray-700/50 to-gray-800/50 animate-morph"></div>
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-6">
                                 <button
@@ -213,7 +213,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                                             <div key={index} className="flex items-center">
                                                 <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 ${
                                                     isCompleted ? 'bg-green-500 scale-110' :
-                                                        isActive ? 'bg-white text-blue-600 scale-110' :
+                                                        isActive ? 'bg-white text-gray-700 scale-110' :
                                                             'bg-white/20 text-white/60'
                                                 }`}>
                                                     {isCompleted ? (
@@ -278,7 +278,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                                 <button
                                     type="button"
                                     onClick={nextStep}
-                                    className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                                    className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
                                 >
                                     Următorul
                                     <ArrowLeft className="w-4 h-4 rotate-180 transition-transform duration-300 group-hover:translate-x-1" />
@@ -311,11 +311,11 @@ const PatientRegistration = ({ onComplete, onBack }) => {
     );
 };
 
-// Enhanced Step Components with Professional Styling
+// Enhanced Step Components with Professional Gray Styling
 const PersonalInfoStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
                 <User className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -334,11 +334,11 @@ const PersonalInfoStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="firstname"
                             />
-                            <label htmlFor="firstname" className="form-label">
+                            <label htmlFor="firstname" className="form-label-gray">
                                 Prenume *
                             </label>
                         </>
@@ -361,11 +361,11 @@ const PersonalInfoStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="surname"
                             />
-                            <label htmlFor="surname" className="form-label">
+                            <label htmlFor="surname" className="form-label-gray">
                                 Nume *
                             </label>
                         </>
@@ -393,12 +393,12 @@ const PersonalInfoStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 maxLength="13"
                                 id="cnp"
                             />
-                            <label htmlFor="cnp" className="form-label">
+                            <label htmlFor="cnp" className="form-label-gray">
                                 <CreditCard className="w-4 h-4 inline mr-1" />
                                 CNP *
                             </label>
@@ -424,11 +424,11 @@ const PersonalInfoStep = ({ control, errors }) => (
                             <input
                                 {...field}
                                 type="date"
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="birthdate"
                             />
-                            <label htmlFor="birthdate" className="form-label">
+                            <label htmlFor="birthdate" className="form-label-gray">
                                 <Calendar className="w-4 h-4 inline mr-1" />
                                 Data nașterii *
                             </label>
@@ -444,7 +444,7 @@ const PersonalInfoStep = ({ control, errors }) => (
             </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
             <label className="block text-sm font-medium text-gray-700 mb-4">Gen *</label>
             <div className="flex gap-6">
                 <Controller
@@ -457,11 +457,21 @@ const PersonalInfoStep = ({ control, errors }) => (
                                 <input
                                     {...field}
                                     type="radio"
+                                    value="F"
+                                    checked={field.value === 'F'}
+                                    className="w-5 h-5 text-gray-600 focus:ring-gray-500 transition-transform duration-200 group-hover:scale-110"
+                                />
+                                <span className="ml-3 text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-200">Feminin</span>
+                            </label>
+                            <label className="group flex items-center cursor-pointer">
+                                <input
+                                    {...field}
+                                    type="radio"
                                     value="M"
                                     checked={field.value === 'M'}
-                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500 transition-transform duration-200 group-hover:scale-110"
+                                    className="w-5 h-5 text-gray-600 focus:ring-gray-500 transition-transform duration-200 group-hover:scale-110"
                                 />
-                                <span className="ml-3 text-gray-700 font-medium group-hover:text-blue-600 transition-colors duration-200">Feminin</span>
+                                <span className="ml-3 text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-200">Masculin</span>
                             </label>
                         </>
                     )}
@@ -480,7 +490,7 @@ const PersonalInfoStep = ({ control, errors }) => (
 const ContactInfoStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-gray-500 to-gray-600 rounded-xl flex items-center justify-center">
                 <Phone className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -505,11 +515,11 @@ const ContactInfoStep = ({ control, errors }) => (
                         <input
                             {...field}
                             type="email"
-                            className="form-input"
+                            className="form-input-gray"
                             placeholder=" "
                             id="email"
                         />
-                        <label htmlFor="email" className="form-label">
+                        <label htmlFor="email" className="form-label-gray">
                             <Mail className="w-4 h-4 inline mr-1" />
                             Email *
                         </label>
@@ -541,11 +551,11 @@ const ContactInfoStep = ({ control, errors }) => (
                         <input
                             {...field}
                             type="tel"
-                            className="form-input"
+                            className="form-input-gray"
                             placeholder=" "
                             id="telefon"
                         />
-                        <label htmlFor="telefon" className="form-label">
+                        <label htmlFor="telefon" className="form-label-gray">
                             <Phone className="w-4 h-4 inline mr-1" />
                             Telefon *
                         </label>
@@ -561,14 +571,14 @@ const ContactInfoStep = ({ control, errors }) => (
             <p className="text-gray-500 text-xs mt-1">Ex: 0740123456 sau +40740123456</p>
         </div>
 
-        <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-6 border border-emerald-100">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
             <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <CheckCircle className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                    <h3 className="font-medium text-emerald-800 mb-2">Protecția datelor personale</h3>
-                    <p className="text-emerald-700 text-sm">
+                    <h3 className="font-medium text-gray-800 mb-2">Protecția datelor personale</h3>
+                    <p className="text-gray-700 text-sm">
                         Datele dumneavoastră de contact vor fi folosite exclusiv pentru comunicări legate de
                         programări și tratamente medicale, conform GDPR.
                     </p>
@@ -581,7 +591,7 @@ const ContactInfoStep = ({ control, errors }) => (
 const AddressStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -600,11 +610,11 @@ const AddressStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="judet"
                             />
-                            <label htmlFor="judet" className="form-label">
+                            <label htmlFor="judet" className="form-label-gray">
                                 Județ *
                             </label>
                         </>
@@ -628,11 +638,11 @@ const AddressStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="localitate"
                             />
-                            <label htmlFor="localitate" className="form-label">
+                            <label htmlFor="localitate" className="form-label-gray">
                                 Localitate *
                             </label>
                         </>
@@ -658,11 +668,11 @@ const AddressStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="strada"
                             />
-                            <label htmlFor="strada" className="form-label">
+                            <label htmlFor="strada" className="form-label-gray">
                                 Strada *
                             </label>
                         </>
@@ -686,11 +696,11 @@ const AddressStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="numar"
                             />
-                            <label htmlFor="numar" className="form-label">
+                            <label htmlFor="numar" className="form-label-gray">
                                 Număr *
                             </label>
                         </>
@@ -715,11 +725,11 @@ const AddressStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="bloc"
                             />
-                            <label htmlFor="bloc" className="form-label">
+                            <label htmlFor="bloc" className="form-label-gray">
                                 Bloc (opțional)
                             </label>
                         </>
@@ -736,11 +746,11 @@ const AddressStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="scara"
                             />
-                            <label htmlFor="scara" className="form-label">
+                            <label htmlFor="scara" className="form-label-gray">
                                 Scara (opțional)
                             </label>
                         </>
@@ -757,11 +767,11 @@ const AddressStep = ({ control, errors }) => (
                         <>
                             <input
                                 {...field}
-                                className="form-input"
+                                className="form-input-gray"
                                 placeholder=" "
                                 id="apartament"
                             />
-                            <label htmlFor="apartament" className="form-label">
+                            <label htmlFor="apartament" className="form-label-gray">
                                 Apartament (opțional)
                             </label>
                         </>
@@ -776,7 +786,7 @@ const AddressStep = ({ control, errors }) => (
 const AdditionalInfoStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -793,11 +803,11 @@ const AdditionalInfoStep = ({ control, errors }) => (
                     <>
                         <input
                             {...field}
-                            className="form-input"
+                            className="form-input-gray"
                             placeholder=" "
                             id="recomandare"
                         />
-                        <label htmlFor="recomandare" className="form-label">
+                        <label htmlFor="recomandare" className="form-label-gray">
                             Recomandare (opțional)
                         </label>
                     </>
@@ -814,11 +824,11 @@ const AdditionalInfoStep = ({ control, errors }) => (
                     <>
                         <input
                             {...field}
-                            className="form-input"
+                            className="form-input-gray"
                             placeholder=" "
                             id="representantid"
                         />
-                        <label htmlFor="representantid" className="form-label">
+                        <label htmlFor="representantid" className="form-label-gray">
                             Reprezentant legal (opțional)
                         </label>
                     </>
@@ -829,20 +839,20 @@ const AdditionalInfoStep = ({ control, errors }) => (
             </p>
         </div>
 
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
             <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <CheckCircle className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                    <h3 className="font-medium text-orange-800 mb-3">Finalizare înregistrare</h3>
-                    <div className="space-y-2 text-orange-700 text-sm">
+                    <h3 className="font-medium text-gray-800 mb-3">Finalizare înregistrare</h3>
+                    <div className="space-y-2 text-gray-700 text-sm">
                         <p>✓ Date personale verificate</p>
                         <p>✓ Informații de contact confirmate</p>
                         <p>✓ Adresa de domiciliu completă</p>
                         <p>✓ Pregătit pentru chestionarul medical</p>
                     </div>
-                    <p className="text-orange-600 text-sm mt-3 font-medium">
+                    <p className="text-gray-600 text-sm mt-3 font-medium">
                         După înregistrare, veți putea completa chestionarul medical digital.
                     </p>
                 </div>

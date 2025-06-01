@@ -1,4 +1,4 @@
-/* Enhanced Professional CSS with Animations for Dental Clinic App */
+/* Enhanced Professional CSS with Gray Theme and Animations for Dental Clinic App */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @tailwind base;
@@ -10,21 +10,23 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Custom CSS Variables */
+/* Custom CSS Variables - Gray Theme */
 :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --primary-gradient: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    --secondary-gradient: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     --glass-bg: rgba(255, 255, 255, 0.9);
     --glass-border: rgba(255, 255, 255, 0.18);
     --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     --shadow-strong: 0 20px 40px 0 rgba(31, 38, 135, 0.5);
+    --gray-gradient: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
 }
 
-/* Enhanced Ant Design Overrides */
+/* Enhanced Ant Design Overrides - Gray Theme */
 .ant-card {
     border-radius: 20px !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border: 1px solid rgba(156, 163, 175, 0.2) !important;
     background: var(--glass-bg) !important;
     backdrop-filter: blur(20px) !important;
     box-shadow: var(--shadow-soft) !important;
@@ -34,6 +36,7 @@
 .ant-card:hover {
     transform: translateY(-4px) !important;
     box-shadow: var(--shadow-strong) !important;
+    border-color: rgba(107, 114, 128, 0.3) !important;
 }
 
 .ant-btn {
@@ -51,7 +54,8 @@
 
 .ant-btn-primary:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4) !important;
+    box-shadow: 0 8px 24px rgba(75, 85, 99, 0.4) !important;
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
 }
 
 .ant-input,
@@ -67,8 +71,8 @@
 .ant-input:focus,
 .ant-select-focused .ant-select-selector,
 .ant-picker-focused {
-    border-color: #667eea !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    border-color: #6b7280 !important;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1) !important;
     transform: translateY(-1px) !important;
 }
 
@@ -86,7 +90,7 @@
 }
 
 .ant-table-tbody > tr:hover > td {
-    background: rgba(102, 126, 234, 0.04) !important;
+    background: rgba(107, 114, 128, 0.04) !important;
 }
 
 /* Professional Animation Classes */
@@ -186,19 +190,19 @@
 
 @keyframes glow {
     0%, 100% {
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 0 20px rgba(107, 114, 128, 0.3);
     }
     50% {
-        box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 0 30px rgba(107, 114, 128, 0.6);
     }
 }
 
 @keyframes morph {
     0%, 100% {
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        background: linear-gradient(45deg, #6b7280, #4b5563);
     }
     50% {
-        background: linear-gradient(225deg, #764ba2, #667eea);
+        background: linear-gradient(225deg, #4b5563, #6b7280);
     }
 }
 
@@ -336,7 +340,7 @@
     animation: fadeInUp 0.6s ease-out forwards;
 }
 
-/* Enhanced Form Styles */
+/* Enhanced Form Styles - Gray Theme */
 .form-group {
     position: relative;
     margin-bottom: 1.5rem;
@@ -355,15 +359,15 @@
 
 .form-input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #6b7280;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
     transform: translateY(-2px);
 }
 
 .form-input:focus + .form-label,
 .form-input:not(:placeholder-shown) + .form-label {
     transform: translateY(-28px) scale(0.85);
-    color: #667eea;
+    color: #6b7280;
     background: white;
     padding: 0 8px;
 }
@@ -379,18 +383,56 @@
     transform-origin: left top;
 }
 
-/* Glass Effect Components */
+/* Gray Theme Form Styles */
+.form-input-gray {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.form-input-gray:focus {
+    outline: none;
+    border-color: #6b7280;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
+    transform: translateY(-2px);
+}
+
+.form-input-gray:focus + .form-label-gray,
+.form-input-gray:not(:placeholder-shown) + .form-label-gray {
+    transform: translateY(-28px) scale(0.85);
+    color: #4b5563;
+    background: white;
+    padding: 0 8px;
+}
+
+.form-label-gray {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    color: #6b7280;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    transform-origin: left top;
+}
+
+/* Glass Effect Components - Gray Theme */
 .glass-card {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(156, 163, 175, 0.18);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 .glass-button {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(156, 163, 175, 0.3);
 }
 
 /* Hover Effects */
@@ -416,7 +458,7 @@
     width: 40px;
     height: 40px;
     border: 4px solid #f3f4f6;
-    border-top: 4px solid #667eea;
+    border-top: 4px solid #6b7280;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -437,7 +479,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #667eea;
+    background: #6b7280;
     animation: bounce 1.4s infinite ease-in-out both;
 }
 
@@ -453,9 +495,31 @@
     }
 }
 
+/* Doctor Dashboard Enhancements - Gray Theme */
+.doctor-dashboard .glass-card {
+    border: 1px solid rgba(156, 163, 175, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.doctor-dashboard .hover-lift:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Patient Interface Enhancements */
+.patient-interface .form-input-gray {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #d1d5db;
+}
+
+.patient-interface .form-input-gray:focus {
+    border-color: #4b5563;
+    box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.1);
+}
+
 /* Responsive Improvements */
 @media (max-width: 768px) {
-    .form-input {
+    .form-input,
+    .form-input-gray {
         padding: 14px;
         font-size: 16px; /* Prevent zoom on iOS */
     }
@@ -466,27 +530,35 @@
     }
 }
 
-/* Professional Gradients */
+/* Professional Gradients - Gray Theme */
 .gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+}
+
+.gradient-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
 }
 
 .gradient-success {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 .gradient-danger {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-/* Custom Scrollbar */
+.gradient-gray {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+/* Custom Scrollbar - Gray Theme */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -497,12 +569,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
 }
 
 /* Focus Improvements for Accessibility */
@@ -510,8 +582,67 @@ button:focus,
 input:focus,
 select:focus,
 textarea:focus {
-    outline: 2px solid #667eea;
+    outline: 2px solid #6b7280;
     outline-offset: 2px;
+}
+
+/* Advanced Card Styles */
+.professional-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(156, 163, 175, 0.1);
+    border-radius: 16px;
+    box-shadow:
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.professional-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Status Indicators */
+.status-online {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.status-offline {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2);
+}
+
+.status-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+/* Professional Button Variants */
+.btn-professional {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 1px solid rgba(156, 163, 175, 0.3);
+    color: #374151;
+    font-weight: 500;
+    padding: 12px 24px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-professional:hover {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-professional:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 /* Print Styles */
@@ -524,9 +655,23 @@ textarea:focus {
         background: white !important;
     }
 
-    .glass-card {
+    .glass-card,
+    .professional-card {
         background: white !important;
         box-shadow: none !important;
         border: 1px solid #e5e7eb !important;
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --glass-bg: rgba(31, 41, 55, 0.9);
+        --glass-border: rgba(75, 85, 99, 0.18);
+    }
+
+    .glass-card {
+        background: var(--glass-bg);
+        border-color: var(--glass-border);
     }
 }

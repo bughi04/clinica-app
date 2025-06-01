@@ -77,12 +77,12 @@ class DoctorDashboard extends Component {
 
     formatRiskLevel = (riskLevel) => {
         const riskMap = {
-            'minimal': { text: 'Minimal', color: '#52c41a', bgColor: '#f6ffed' },
-            'low': { text: 'Scăzut', color: '#1890ff', bgColor: '#e6f7ff' },
-            'medium': { text: 'Mediu', color: '#fa8c16', bgColor: '#fff7e6' },
-            'high': { text: 'Înalt', color: '#f5222d', bgColor: '#fff2f0' }
+            'minimal': { text: 'Minimal', color: '#10b981', bgColor: '#ecfdf5' },
+            'low': { text: 'Scăzut', color: '#6b7280', bgColor: '#f9fafb' },
+            'medium': { text: 'Mediu', color: '#f59e0b', bgColor: '#fffbeb' },
+            'high': { text: 'Înalt', color: '#ef4444', bgColor: '#fef2f2' }
         };
-        return riskMap[riskLevel] || { text: 'Necunoscut', color: '#d9d9d9', bgColor: '#fafafa' };
+        return riskMap[riskLevel] || { text: 'Necunoscut', color: '#6b7280', bgColor: '#f9fafb' };
     };
 
     render() {
@@ -127,16 +127,16 @@ class DoctorDashboard extends Component {
 
         return (
             <div className="doctor-dashboard space-y-8 animate-fade-in">
-                {/* Enhanced Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-purple-600/80 animate-morph"></div>
+                {/* Enhanced Header with Gray Theme */}
+                <div className="bg-gradient-to-r from-gray-700 to-gray-800 rounded-2xl p-8 text-white relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-700/80 to-gray-800/80 animate-morph"></div>
                     <div className="relative z-10">
                         <div className="flex justify-between items-start mb-6">
                             <div>
                                 <h1 className="text-3xl font-bold mb-2">
                                     Panou de Control Medical
                                 </h1>
-                                <p className="text-blue-100 text-lg">
+                                <p className="text-gray-100 text-lg">
                                     Dental Point Clinic - Sistem Digital de Management
                                 </p>
                             </div>
@@ -193,18 +193,18 @@ class DoctorDashboard extends Component {
                     </div>
                 </div>
 
-                {/* Enhanced Statistics Cards */}
+                {/* Enhanced Statistics Cards with Gray Theme */}
                 <Row gutter={[24, 24]}>
                     <Col span={6}>
                         <Card className="hover-lift glass-card h-full">
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-glow">
+                                <div className="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-glow">
                                     <Users className="w-8 h-8 text-white" />
                                 </div>
                                 <Statistic
                                     title={<span className="text-gray-600 font-medium">Total Pacienți</span>}
                                     value={statistics.totalPatients}
-                                    valueStyle={{ color: '#1890ff', fontSize: '2rem', fontWeight: 'bold' }}
+                                    valueStyle={{ color: '#4b5563', fontSize: '2rem', fontWeight: 'bold' }}
                                 />
                                 <div className="text-sm text-gray-500 mt-2 flex items-center justify-center gap-1">
                                     <TrendingUp className="w-4 h-4 text-green-500" />
@@ -217,16 +217,16 @@ class DoctorDashboard extends Component {
                     <Col span={6}>
                         <Card className="hover-lift glass-card h-full">
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-glow">
+                                <div className="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-glow">
                                     <FileText className="w-8 h-8 text-white" />
                                 </div>
                                 <Statistic
                                     title={<span className="text-gray-600 font-medium">Chestionare Completate</span>}
                                     value={statistics.questionnaireStats.total || 0}
-                                    valueStyle={{ color: '#52c41a', fontSize: '2rem', fontWeight: 'bold' }}
+                                    valueStyle={{ color: '#10b981', fontSize: '2rem', fontWeight: 'bold' }}
                                 />
                                 <div className="text-sm text-gray-500 mt-2">
-                                    Ultima săptămână: <span className="font-semibold text-emerald-600">{statistics.questionnaireStats.recentWeek || 0}</span>
+                                    Ultima săptămână: <span className="font-semibold text-gray-700">{statistics.questionnaireStats.recentWeek || 0}</span>
                                 </div>
                             </div>
                         </Card>
@@ -253,13 +253,13 @@ class DoctorDashboard extends Component {
                     <Col span={6}>
                         <Card className="hover-lift glass-card h-full">
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-glow">
+                                <div className="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-glow">
                                     <Heart className="w-8 h-8 text-white" />
                                 </div>
                                 <Statistic
                                     title={<span className="text-gray-600 font-medium">Alerte Active</span>}
                                     value={highPriorityAlerts.length}
-                                    valueStyle={{ color: '#722ed1', fontSize: '2rem', fontWeight: 'bold' }}
+                                    valueStyle={{ color: '#6b7280', fontSize: '2rem', fontWeight: 'bold' }}
                                 />
                                 <div className="text-sm text-gray-500 mt-2">
                                     Prioritate înaltă
@@ -269,13 +269,13 @@ class DoctorDashboard extends Component {
                     </Col>
                 </Row>
 
-                {/* Risk Distribution Chart */}
+                {/* Risk Distribution Chart with Gray Theme */}
                 {statistics.questionnaireStats.riskDistribution && (
                     <Row gutter={[24, 24]}>
                         <Col span={24}>
                             <Card title={
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
                                         <Award className="w-5 h-5 text-white" />
                                     </div>
                                     <span className="text-xl font-semibold">Distribuția Riscurilor Medicale</span>
@@ -317,13 +317,13 @@ class DoctorDashboard extends Component {
                 )}
 
                 <Row gutter={[24, 24]}>
-                    {/* Enhanced Recent Questionnaires */}
+                    {/* Enhanced Recent Questionnaires with Gray Theme */}
                     <Col span={12}>
                         <Card
                             title={
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                                        <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
                                             <FileText className="w-5 h-5 text-white" />
                                         </div>
                                         <span className="text-xl font-semibold">Chestionare Recente</span>
@@ -350,7 +350,7 @@ class DoctorDashboard extends Component {
                                                     <Button
                                                         type="primary"
                                                         size="small"
-                                                        className="hover-scale"
+                                                        className="hover-scale bg-gradient-to-r from-gray-600 to-gray-700 border-none"
                                                         onClick={() => this.props.onPatientSelect && this.props.onPatientSelect(item.patientId)}
                                                     >
                                                         Vezi Detalii
@@ -407,7 +407,7 @@ class DoctorDashboard extends Component {
                         </Card>
                     </Col>
 
-                    {/* Enhanced High Priority Alerts */}
+                    {/* Enhanced High Priority Alerts with Gray Theme */}
                     <Col span={12}>
                         <Card
                             title={
@@ -471,7 +471,7 @@ class DoctorDashboard extends Component {
                                                         <Button
                                                             size="small"
                                                             type="link"
-                                                            className="hover-scale"
+                                                            className="hover-scale text-gray-600 hover:text-gray-800"
                                                             onClick={() => this.props.onPatientSelect && this.props.onPatientSelect(alert.patientId)}
                                                         >
                                                             Vezi Pacient →
@@ -498,14 +498,14 @@ class DoctorDashboard extends Component {
                     </Col>
                 </Row>
 
-                {/* Risk Patients Summary */}
+                {/* Risk Patients Summary with Gray Theme */}
                 {riskAlerts.length > 0 && (
                     <Row gutter={[24, 24]}>
                         <Col span={24}>
                             <Card
                                 title={
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                        <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
                                             <Users className="w-5 h-5 text-white" />
                                         </div>
                                         <span className="text-xl font-semibold">Pacienți cu Risc Înalt/Mediu</span>
@@ -536,7 +536,7 @@ class DoctorDashboard extends Component {
                                                             {patient.patientName.split(' ').map(n => n[0]).join('')}
                                                         </Avatar>
                                                         <div>
-                                                            <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                                                            <h3 className="font-semibold text-gray-800 group-hover:text-gray-600 transition-colors">
                                                                 {patient.patientName}
                                                             </h3>
                                                         </div>
@@ -582,7 +582,7 @@ class DoctorDashboard extends Component {
                     </Row>
                 )}
 
-                {/* Database Connection Status */}
+                {/* Database Connection Status with Gray Theme */}
                 <Row gutter={[24, 24]}>
                     <Col span={24}>
                         <Card size="small" className="glass-card">
