@@ -78,10 +78,10 @@ const App = () => {
         setFormData({});
     };
 
-    // Enhanced Loading Screen Component with Gray Theme
+    // Enhanced Loading Screen Component with Blue Theme
     if (isLoading) {
         return (
-            <div className="fixed inset-0 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 flex items-center justify-center">
+            <div className="fixed inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 flex items-center justify-center">
                 <div className="text-center">
                     <div className="relative mb-8">
                         <div className="w-24 h-24 border-4 border-white/20 rounded-full animate-spin border-t-white mx-auto"></div>
@@ -107,22 +107,22 @@ const App = () => {
         );
     }
 
-    // Enhanced Welcome Screen Component with Gray Theme
+    // Enhanced Welcome Screen Component with Blue Theme
     if (showWelcome) {
         return (
-            <div className="fixed inset-0 bg-gradient-to-br from-gray-700 via-gray-600 to-gray-800 flex items-center justify-center overflow-hidden">
+            <div className="fixed inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 flex items-center justify-center overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-float"></div>
-                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-gray-400/20 rounded-full blur-3xl animate-float-delay"></div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gray-500/20 rounded-full blur-2xl animate-pulse"></div>
+                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-float-delay"></div>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-blue-500/20 rounded-full blur-2xl animate-pulse"></div>
                 </div>
 
                 <div className="text-center z-10">
                     <div className="relative mb-8">
                         <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30 mx-auto">
                             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                                <Stethoscope className="w-10 h-10 text-gray-700" />
+                                <Stethoscope className="w-10 h-10 text-blue-600" />
                             </div>
                         </div>
                         <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-400 rounded-full flex items-center justify-center animate-ping">
@@ -144,7 +144,7 @@ const App = () => {
                     <div className="flex justify-center space-x-8 mb-8">
                         {[
                             { icon: Shield, label: "GDPR Compliant", color: "text-green-400" },
-                            { icon: Activity, label: "Real-time", color: "text-blue-400" },
+                            { icon: Activity, label: "Real-time", color: "text-blue-300" },
                             { icon: Award, label: "Professional", color: "text-yellow-400" }
                         ].map((feature, index) => (
                             <div
@@ -168,7 +168,7 @@ const App = () => {
         );
     }
 
-    // Enhanced Interface Switcher with Gray Theme
+    // Enhanced Interface Switcher with Blue Theme
     const renderInterfaceSwitcher = () => (
         <div className="fixed top-6 right-6 z-50">
             <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl p-2 border border-gray-200">
@@ -177,7 +177,7 @@ const App = () => {
                         onClick={() => switchInterface('patient')}
                         className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 ${
                             currentInterface === 'patient'
-                                ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white shadow-lg'
+                                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
                                 : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:shadow-md'
                         }`}
                     >
@@ -188,7 +188,7 @@ const App = () => {
                         onClick={() => switchInterface('doctor')}
                         className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 ${
                             currentInterface === 'doctor'
-                                ? 'bg-gradient-to-r from-gray-700 to-gray-800 text-white shadow-lg'
+                                ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg'
                                 : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:shadow-md'
                         }`}
                     >
@@ -200,14 +200,14 @@ const App = () => {
         </div>
     );
 
-    // Enhanced Patient Interface with Gray Theme
+    // Enhanced Patient Interface with Blue Theme
     const renderPatientInterface = () => (
         <TabletInterface>
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 relative overflow-hidden">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-100 relative overflow-hidden">
                 {/* Animated Background Pattern */}
                 <div className="absolute inset-0 opacity-20">
-                    <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-gray-400 to-transparent rounded-full blur-3xl animate-float"></div>
-                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-gray-500 to-transparent rounded-full blur-3xl animate-float-delay"></div>
+                    <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400 to-transparent rounded-full blur-3xl animate-float"></div>
+                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-500 to-transparent rounded-full blur-3xl animate-float-delay"></div>
                 </div>
 
                 <div className="relative z-10">
@@ -244,7 +244,7 @@ const App = () => {
         </TabletInterface>
     );
 
-    // Enhanced Doctor Interface with Gray Theme
+    // Enhanced Doctor Interface with Blue Theme
     const renderDoctorInterface = () => {
         const getViewContent = () => {
             switch (currentView) {
@@ -264,17 +264,17 @@ const App = () => {
 
         return (
             <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative">
-                {/* Enhanced Navigation with Gray Theme */}
+                {/* Enhanced Navigation with Blue Theme */}
                 <nav className="bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-200 sticky top-0 z-40">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="flex justify-between items-center h-20">
                             {/* Logo Section */}
                             <div className="flex items-center group">
-                                <div className="w-12 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center mr-4 group-hover:scale-105 transition-transform duration-300">
+                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-105 transition-transform duration-300">
                                     <Stethoscope className="w-6 h-6 text-white" />
                                 </div>
                                 <div>
-                                    <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-800 bg-clip-text text-transparent">
+                                    <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
                                         Dental Point Clinic
                                     </h1>
                                     <p className="text-sm text-gray-500">Sistem de Management Digital</p>
@@ -293,8 +293,8 @@ const App = () => {
                                         onClick={() => setCurrentView(item.key)}
                                         className={`group flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
                                             currentView === item.key
-                                                ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white shadow-lg'
-                                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                                                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+                                                : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700'
                                         }`}
                                     >
                                         <item.icon className={`w-4 h-4 transition-transform duration-300 ${
@@ -332,7 +332,7 @@ const App = () => {
     );
 };
 
-// Enhanced Patient Login Screen with Gray Theme
+// Enhanced Patient Login Screen with Blue Theme
 const PatientLoginScreen = ({ onLogin, onNewPatient }) => {
     const [patientId, setPatientId] = useState('');
     const [loading, setLoading] = useState(false);
@@ -413,13 +413,13 @@ const PatientLoginScreen = ({ onLogin, onNewPatient }) => {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6">
-            <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-10 w-full max-w-md border border-gray-200">
+            <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-10 w-full max-w-md border border-white/20">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <div className="bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-lg">
                         <User className="w-10 h-10 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-700 to-gray-800 bg-clip-text text-transparent mb-2">
+                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-2">
                         Bun venit
                     </h1>
                     <p className="text-gray-600 text-lg">la Dental Point Clinic</p>
@@ -434,18 +434,18 @@ const PatientLoginScreen = ({ onLogin, onNewPatient }) => {
                             type="text"
                             value={patientId}
                             onChange={(e) => setPatientId(e.target.value)}
-                            className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-transparent text-lg transition-all duration-300 hover:border-gray-300"
+                            className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg transition-all duration-300 hover:border-blue-300"
                             placeholder="Introduceți CNP-ul"
                             required
                         />
                     </div>
 
                     {/* Demo Accounts Section */}
-                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+                    <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
                         <button
                             type="button"
                             onClick={() => setShowDemo(!showDemo)}
-                            className="flex items-center justify-between w-full text-sm font-medium text-gray-700 hover:text-gray-800 transition-colors duration-200"
+                            className="flex items-center justify-between w-full text-sm font-medium text-blue-700 hover:text-blue-800 transition-colors duration-200"
                         >
                             <span>Conturi Demo Disponibile</span>
                             <div className={`transform transition-transform duration-200 ${showDemo ? 'rotate-180' : ''}`}>
@@ -458,7 +458,7 @@ const PatientLoginScreen = ({ onLogin, onNewPatient }) => {
                                 {[
                                     { cnp: '1234567890123', name: 'Maria (cu alergii)', color: 'bg-green-100 text-green-800' },
                                     { cnp: '2345678901234', name: 'Ion (cu diabet)', color: 'bg-yellow-100 text-yellow-800' },
-                                    { cnp: 'demo', name: 'Ana (pacient nou)', color: 'bg-gray-100 text-gray-800' }
+                                    { cnp: 'demo', name: 'Ana (pacient nou)', color: 'bg-blue-100 text-blue-800' }
                                 ].map((demo, index) => (
                                     <button
                                         key={demo.cnp}
@@ -482,7 +482,7 @@ const PatientLoginScreen = ({ onLogin, onNewPatient }) => {
                     <button
                         type="submit"
                         disabled={loading || !patientId.trim()}
-                        className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-4 px-6 rounded-xl font-medium hover:from-gray-700 hover:to-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-lg transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl"
+                        className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-lg transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl"
                     >
                         {loading ? (
                             <div className="flex items-center justify-center">
@@ -499,9 +499,9 @@ const PatientLoginScreen = ({ onLogin, onNewPatient }) => {
                     <p className="text-gray-600 mb-4">Nu aveți cont?</p>
                     <button
                         onClick={onNewPatient}
-                        className="group text-gray-700 hover:text-gray-800 font-medium text-lg transition-all duration-300 hover:scale-105"
+                        className="group text-blue-600 hover:text-blue-700 font-medium text-lg transition-all duration-300 hover:scale-105"
                     >
-                        <span className="border-b-2 border-transparent group-hover:border-gray-700 transition-all duration-300">
+                        <span className="border-b-2 border-transparent group-hover:border-blue-600 transition-all duration-300">
                             Înregistrare pacient nou
                         </span>
                     </button>

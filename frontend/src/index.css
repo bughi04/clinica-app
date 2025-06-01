@@ -644,6 +644,133 @@ textarea:focus {
     transform: translateY(0);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
+/* Override CSS for White Cards and Blue Theme - Add to index.css */
+
+/* Force white background for all doctor dashboard cards */
+.doctor-dashboard .ant-card {
+    background: white !important;
+    border: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    border-radius: 16px !important;
+}
+
+.doctor-dashboard .ant-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Remove glass effects and gray backgrounds */
+.doctor-dashboard .glass-card {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: none !important;
+}
+
+.doctor-dashboard .hover-lift {
+    background: white !important;
+}
+
+/* Force white background for main dashboard container */
+.doctor-dashboard {
+    background: #f9fafb !important;
+}
+
+/* Override header to use blue theme instead of gray */
+.doctor-dashboard .bg-gradient-to-r.from-gray-700.to-gray-800 {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+}
+
+/* Fix risk distribution cards */
+.doctor-dashboard .ant-card .text-center.p-4.rounded-xl {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Patient interface blue theme */
+.patient-interface .bg-gradient-to-br.from-gray-50.to-gray-200 {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%) !important;
+}
+
+.patient-interface .bg-gradient-to-br.from-gray-700.to-gray-800 {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+}
+
+/* Interface switcher blue theme */
+.bg-gradient-to-r.from-gray-600.to-gray-700 {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+.bg-gradient-to-r.from-gray-700.to-gray-800 {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+}
+
+/* Navigation blue theme */
+.bg-gradient-to-r.from-gray-600.to-gray-700.bg-clip-text.text-transparent {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* Patient login improvements */
+.bg-gradient-to-br.from-gray-600.to-gray-700 {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+/* Welcome screen blue theme */
+.bg-gradient-to-br.from-gray-800.via-gray-700.to-gray-900 {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 50%, #1e3a8a 100%) !important;
+}
+
+.bg-gradient-to-br.from-gray-700.via-gray-600.to-gray-800 {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%) !important;
+}
+
+/* Force all cards to be white */
+.ant-card-body {
+    background: white !important;
+}
+
+.ant-card-head {
+    background: white !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+
+/* Specific overrides for doctor dashboard cards */
+.doctor-dashboard .ant-statistic-title {
+    color: #374151 !important;
+}
+
+.doctor-dashboard .ant-statistic-content {
+    color: #111827 !important;
+}
+
+/* Remove any gray gradients from buttons */
+.bg-gradient-to-r.from-gray-600.to-gray-700 {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+/* Fix any remaining gray elements */
+.text-gray-800 {
+    color: #1f2937 !important;
+}
+
+.text-gray-700 {
+    color: #374151 !important;
+}
+
+/* Ensure all dashboard cards have proper styling */
+.doctor-dashboard .ant-card {
+    background-color: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+}
+
+/* Loading screen and welcome screen blue theme */
+.fixed.inset-0.bg-gradient-to-br.from-gray-800.via-gray-700.to-gray-900,
+.fixed.inset-0.bg-gradient-to-br.from-gray-700.via-gray-600.to-gray-800 {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #1d4ed8 100%) !important;
+}
 
 /* Print Styles */
 @media print {
