@@ -42,6 +42,8 @@ class PatientList extends Component {
 
             const { patients, totalItems } = patientData;
 
+            console.log('Patient data received:', patients); // Debug the received data
+
             // Update state with fetched data
             this.setState({
                 patients: patients,
@@ -130,6 +132,12 @@ class PatientList extends Component {
             sorter: (a, b) => a.fullName.localeCompare(b.fullName),
         },
         {
+            title: 'Doctor',
+            dataIndex: 'doctor',
+            key: 'doctor',
+            render: (doctor) => doctor ? `${doctor.firstName} ${doctor.lastName}` : 'Nespecificat',
+        },
+        {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
@@ -177,21 +185,41 @@ class PatientList extends Component {
 
         return (
             <div className="patient-list">
-                <div style={{ marginBottom: 16 }}>
-                    <Space size="middle" wrap>
-                        <Search
-                            placeholder="Caută pacient după nume sau email"
-                            allowClear
-                            enterButton={<SearchOutlined />}
-                            size="large"
-                            onSearch={this.handleSearch}
-                            style={{ width: 300 }}
+                <div className="mb-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 flex-wrap">
+                        <div className="flex w-full max-w-[300px] min-w-[200px]">
+                            <Input
+                                placeholder="Caută pacient după nume sau email"
+                                //allowClear
+                                size="large"
+                                value={this.state.searchText}
+                                onChange={e => this.setState({ searchText: e.target.value })}
+                                onPressEnter={e => this.handleSearch(e.target.value)}
+                                className="flex-1 rounded-r-none border-r-0"
+                                style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+                            />
+                            <Button
+                                type="default"
+                                size="large"
+                                icon={<SearchOutlined />}
+                                onClick={() => this.handleSearch(this.state.searchText)}
+                                className="rounded-l-none border-l-0"
+                                style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, height: 40 }}
+                            />
+                        </div>
+
+                        <RangePicker
+                            placeholder={['De la', 'Până la']}
+                            onChange={(dates) => this.handleFilterChange('dateRange', dates)}
+                            style={{ width: '100%', maxWidth: 250 }}
+                            className="flex-1 min-w-[180px]"
                         />
 
                         <Select
                             placeholder="Alergii"
                             allowClear
-                            style={{ width: 120 }}
+                            style={{ width: '100%', maxWidth: 120 }}
+                            className="flex-1 min-w-[120px]"
                             onChange={(value) => this.handleFilterChange('hasAllergies', value)}
                         >
                             <Option value={true}>Cu alergii</Option>
@@ -201,19 +229,14 @@ class PatientList extends Component {
                         <Select
                             placeholder="Condiții cronice"
                             allowClear
-                            style={{ width: 150 }}
+                            style={{ width: '100%', maxWidth: 150 }}
+                            className="flex-1 min-w-[140px]"
                             onChange={(value) => this.handleFilterChange('hasChronicConditions', value)}
                         >
                             <Option value={true}>Cu condiții</Option>
                             <Option value={false}>Fără condiții</Option>
                         </Select>
-
-                        <RangePicker
-                            placeholder={['De la', 'Până la']}
-                            onChange={(dates) => this.handleFilterChange('dateRange', dates)}
-                            style={{ width: 250 }}
-                        />
-                    </Space>
+                    </div>
                 </div>
 
                 <Table

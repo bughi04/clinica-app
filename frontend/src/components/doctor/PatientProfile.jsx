@@ -38,6 +38,11 @@ class PatientProfile extends Component {
             const questionnaire = questionnaires.length > 0
                 ? questionnaires[0]
                 : {}; // Get the first questionnaire, or an empty object if none exists
+            
+            console.log('Questionnaire data structure:', questionnaire); // Debug questionnaire structure
+            console.log('Patient data structure:', patient); // Debug patient structure
+            console.log('Number of questionnaires:', questionnaires.length); // Debug questionnaire count
+            
             this.setState({
                 patient,
                 questionnaire: {
@@ -115,6 +120,18 @@ class PatientProfile extends Component {
         const { patient, questionnaire } = this.state;
         if (!patient) return null;
 
+        console.log('Rendering basic info - patient:', patient);
+        console.log('Rendering basic info - questionnaire:', questionnaire);
+        console.log('Rendering basic info - questionnaire.data_completare:', questionnaire?.data_completare);
+
+        // Try to get the registration date from different possible sources
+        const registrationDate = patient.created_at || patient.createdAt || null;
+        console.log('Registration date:', registrationDate);
+
+        // Try to get the last completion date
+        const lastCompletionDate = questionnaire?.data_completare || null;
+        console.log('Last completion date:', lastCompletionDate);
+
         return (
             <Descriptions title="Informații Personale" bordered>
                 <Descriptions.Item label="Nume Complet">{patient.fullName}</Descriptions.Item>
@@ -123,11 +140,14 @@ class PatientProfile extends Component {
                 </Descriptions.Item>
                 <Descriptions.Item label="Email">{patient.email}</Descriptions.Item>
                 <Descriptions.Item label="Telefon">{patient.phone}</Descriptions.Item>
+                <Descriptions.Item label="Doctor">
+                    {patient.doctor ? `${patient.doctor.firstName} ${patient.doctor.lastName}` : 'Nespecificat'}
+                </Descriptions.Item>
                 <Descriptions.Item label="Înregistrat la">
-                    {new Date(patient.createdAt).toLocaleDateString('ro-RO')}
+                    {registrationDate ? new Date(registrationDate).toLocaleDateString('ro-RO') : 'N/A'}
                 </Descriptions.Item>
                 <Descriptions.Item label="Ultima Completare">
-                    {questionnaire ? new Date(questionnaire.submissionDate).toLocaleDateString('ro-RO') : 'N/A'}
+                    {lastCompletionDate ? new Date(lastCompletionDate).toLocaleDateString('ro-RO') : 'N/A'}
                 </Descriptions.Item>
             </Descriptions>
         );

@@ -128,28 +128,14 @@ class DoctorDashboard extends Component {
         return (
             <div className="doctor-dashboard space-y-8 animate-fade-in">
                 {/* Enhanced Header with Modern Blue Theme */}
-                <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden shadow-xl">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-blue-700/80"></div>
+                <div className="bg-gradient-to-r from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-2xl p-8 text-white relative overflow-hidden shadow-xl">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[rgb(59,185,194)]/80 to-[rgb(49,175,184)]/80"></div>
                     <div className="relative z-10">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <h1 className="text-3xl font-bold mb-2">
-                                    Panou de Control Medical
-                                </h1>
-                                <p className="text-blue-100 text-lg">
-                                    Dental Point Clinic - Sistem Digital de Management
-                                </p>
-                            </div>
-                            <div className="text-right">
-                                <Button
-                                    onClick={this.loadDashboardData}
-                                    loading={refreshing}
-                                    className="bg-white/20 text-white border-white/30 hover:bg-white/30"
-                                >
-                                    <Activity className="w-4 h-4 mr-2" />
-                                    Reîmprospătează
-                                </Button>
-                            </div>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-2xl font-bold">Panou de Control - Dental Point Clinic</h2>
+                            <p className="text-lg">
+                                Sistem de Management Digital
+                            </p>
                         </div>
 
                         {/* Quick Stats Row */}
@@ -198,7 +184,7 @@ class DoctorDashboard extends Component {
                     <Col span={6}>
                         <Card className="h-full shadow-lg border-0 hover:shadow-xl transition-shadow duration-300">
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <div className="w-16 h-16 bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-2xl flex items-center justify-center mx-auto mb-4">
                                     <Users className="w-8 h-8 text-white" />
                                 </div>
                                 <Statistic
@@ -274,7 +260,7 @@ class DoctorDashboard extends Component {
                     <Row gutter={[24, 24]}>
                         <Col span={24}>
                             <Card title={
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3 pt-4">
                                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
                                         <Award className="w-5 h-5 text-white" />
                                     </div>
@@ -321,8 +307,8 @@ class DoctorDashboard extends Component {
                     <Col span={12}>
                         <Card
                             title={
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
+                                <div className="flex items-center pt-4 justify-between">
+                                    <div className="flex items-center gap-3 ">
                                         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
                                             <FileText className="w-5 h-5 text-white" />
                                         </div>
@@ -350,7 +336,7 @@ class DoctorDashboard extends Component {
                                                     <Button
                                                         type="primary"
                                                         size="small"
-                                                        className="bg-blue-500 border-none hover:bg-blue-600"
+                                                        className="bg-[rgb(59,185,194)] border-none hover:bg-[rgb(49,175,184)]"
                                                         onClick={() => this.props.onPatientSelect && this.props.onPatientSelect(item.patientId)}
                                                     >
                                                         Vezi Detalii
@@ -411,7 +397,7 @@ class DoctorDashboard extends Component {
                     <Col span={12}>
                         <Card
                             title={
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between pt-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center animate-pulse">
                                             <AlertTriangle className="w-5 h-5 text-white" />
@@ -471,7 +457,7 @@ class DoctorDashboard extends Component {
                                                         <Button
                                                             size="small"
                                                             type="link"
-                                                            className="text-blue-600 hover:text-blue-700"
+                                                            className="text-[rgb(59,185,194)] hover:text-[rgb(49,175,184)]"
                                                             onClick={() => this.props.onPatientSelect && this.props.onPatientSelect(alert.patientId)}
                                                         >
                                                             Vezi Pacient →
@@ -504,7 +490,7 @@ class DoctorDashboard extends Component {
                         <Col span={24}>
                             <Card
                                 title={
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-3 pt-4">
                                         <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
                                             <Users className="w-5 h-5 text-white" />
                                         </div>

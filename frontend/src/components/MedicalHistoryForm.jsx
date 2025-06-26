@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { FileText, AlertTriangle, User, Heart, Pill, Shield, PenTool } from 'lucide-react';
 import ApiService from '../services/apiService.js';
+import logoImage from '../assets/logo2x.png';
+import { Select, Spin } from 'antd';
 
 // Reusable PDF Question Component
 const PDFQuestion = ({ control, name, label }) => (
@@ -22,7 +24,7 @@ const PDFQuestion = ({ control, name, label }) => (
                                     type="radio"
                                     value="DA"
                                     checked={field.value === 'DA'}
-                                    className="w-4 h-4 text-green-600 focus:ring-green-500 mr-2"
+                                    className="w-4 h-4 text-[rgb(59,185,194)] rounded focus:ring-[rgb(59,185,194)] mr-3"
                                 />
                                 <span className="text-green-700 font-medium text-sm">DA</span>
                             </label>
@@ -58,13 +60,13 @@ const PDFQuestion = ({ control, name, label }) => (
 const PatientInfoSection = ({ control, errors, patient }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-            <User className="w-6 h-6 text-blue-600" />
+            <User className="w-6 h-6 text-[rgb(59,185,194)]" />
             <h2 className="text-xl font-semibold text-gray-800">Informații Pacient</h2>
         </div>
 
         {/* Patient Info Display - auto-filled */}
-        <div className="bg-blue-50 p-6 rounded-xl">
-            <h3 className="font-semibold text-blue-800 mb-4">Date Pacient (completate automat)</h3>
+        <div className="bg-[rgb(59,185,194)]/10 p-6 rounded-xl">
+            <h3 className="font-semibold text-[rgb(49,175,184)] mb-4">Date Pacient (completate automat)</h3>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div><strong>NUME:</strong> {patient?.lastName || '_______________'}</div>
                 <div><strong>PRENUME:</strong> {patient?.firstName || '_______________'}</div>
@@ -88,7 +90,7 @@ const PatientInfoSection = ({ control, errors, patient }) => (
                                 {...field}
                                 type="checkbox"
                                 checked={field.value}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 mr-3"
+                                className="w-4 h-4 text-[rgb(59,185,194)] rounded focus:ring-[rgb(59,185,194)] mr-3"
                             />
                         )}
                     />
@@ -103,7 +105,7 @@ const PatientInfoSection = ({ control, errors, patient }) => (
                                 {...field}
                                 type="checkbox"
                                 checked={field.value}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 mr-3"
+                                className="w-4 h-4 text-[rgb(59,185,194)] rounded focus:ring-[rgb(59,185,194)] mr-3"
                             />
                         )}
                     />
@@ -118,7 +120,7 @@ const PatientInfoSection = ({ control, errors, patient }) => (
                                 {...field}
                                 type="checkbox"
                                 checked={field.value}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 mr-3"
+                                className="w-4 h-4 text-[rgb(59,185,194)] rounded focus:ring-[rgb(59,185,194)] mr-3"
                             />
                         )}
                     />
@@ -130,7 +132,7 @@ const PatientInfoSection = ({ control, errors, patient }) => (
                     render={({ field }) => (
                         <input
                             {...field}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mt-2"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent mt-2"
                             placeholder="Specificați altele..."
                         />
                     )}
@@ -147,7 +149,7 @@ const PatientInfoSection = ({ control, errors, patient }) => (
 const DentalExaminationSection = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-            <span className="text-2xl">🦷</span>
+            <img src={logoImage} alt="Dental Point Clinic Logo" className="w-8 h-8" />
             <h2 className="text-xl font-semibold text-gray-800">Examen Stomatologic</h2>
         </div>
 
@@ -188,7 +190,7 @@ const DentalExaminationSection = ({ control, errors }) => (
                         <input
                             {...field}
                             type="date"
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                         />
                     )}
                 />
@@ -204,7 +206,7 @@ const DentalExaminationSection = ({ control, errors }) => (
                     render={({ field }) => (
                         <textarea
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             rows="3"
                             placeholder="Descrieți aspectul actual..."
                         />
@@ -222,7 +224,7 @@ const DentalExaminationSection = ({ control, errors }) => (
                     render={({ field }) => (
                         <textarea
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             rows="3"
                             placeholder="Descrieți problemele sau scrieți 'Nu' dacă nu aveți..."
                         />
@@ -253,7 +255,7 @@ const GeneralHealthSection = ({ control, errors, watch }) => (
                     render={({ field }) => (
                         <select
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                         >
                             <option value="">Selectați...</option>
                             <option value="Bună">Bună</option>
@@ -286,7 +288,7 @@ const GeneralHealthSection = ({ control, errors, watch }) => (
                     render={({ field }) => (
                         <textarea
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             rows="2"
                             placeholder="Nume medic și diagnostic..."
                         />
@@ -310,7 +312,7 @@ const GeneralHealthSection = ({ control, errors, watch }) => (
                     render={({ field }) => (
                         <textarea
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             rows="2"
                             placeholder="Motivul spitalizării..."
                         />
@@ -334,7 +336,7 @@ const GeneralHealthSection = ({ control, errors, watch }) => (
                     render={({ field }) => (
                         <textarea
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             rows="3"
                             placeholder="Lista medicamentelor cu dozele..."
                         />
@@ -359,7 +361,7 @@ const GeneralHealthSection = ({ control, errors, watch }) => (
                         <input
                             {...field}
                             type="number"
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             placeholder="Numărul de țigări pe zi..."
                         />
                     )}
@@ -382,7 +384,7 @@ const GeneralHealthSection = ({ control, errors, watch }) => (
                     render={({ field }) => (
                         <textarea
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             rows="2"
                             placeholder="Lista alergiilor..."
                         />
@@ -426,12 +428,12 @@ const MedicalConditionsSection = ({ control, errors, patient }) => {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-3 mb-6">
-                <Pill className="w-6 h-6 text-blue-500" />
+                <Pill className="w-6 h-6 text-[rgb(59,185,194)]" />
                 <h2 className="text-xl font-semibold text-gray-800">Aveți sau ați avut vreodată:</h2>
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-xl mb-6">
-                <p className="text-blue-800 text-sm">
+            <div className="bg-[rgb(59,185,194)]/10 p-4 rounded-xl mb-6">
+                <p className="text-[rgb(49,175,184)] text-sm">
                     Vă rugăm să răspundeți cu DA sau NU pentru fiecare condiție medicală:
                 </p>
             </div>
@@ -457,7 +459,7 @@ const MedicalConditionsSection = ({ control, errors, patient }) => {
                     render={({ field }) => (
                         <textarea
                             {...field}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                             rows="3"
                             placeholder="Descrieți alte probleme de sănătate..."
                         />
@@ -487,7 +489,7 @@ const MedicalConditionsSection = ({ control, errors, patient }) => {
                                                     type="radio"
                                                     value="DA"
                                                     checked={field.value === 'DA'}
-                                                    className="w-4 h-4 text-pink-600 focus:ring-pink-500 mr-2"
+                                                    className="w-4 h-4 text-[rgb(59,185,194)] rounded focus:ring-[rgb(59,185,194)] mr-3"
                                                 />
                                                 <span className="text-green-700 font-medium text-sm">DA</span>
                                             </label>
@@ -540,7 +542,7 @@ const MedicalConditionsSection = ({ control, errors, patient }) => {
                                                     type="radio"
                                                     value="DA"
                                                     checked={field.value === 'DA'}
-                                                    className="w-4 h-4 text-pink-600 focus:ring-pink-500 mr-2"
+                                                    className="w-4 h-4 text-[rgb(59,185,194)] rounded focus:ring-[rgb(59,185,194)] mr-3"
                                                 />
                                                 <span className="text-green-700 font-medium text-sm">DA</span>
                                             </label>
@@ -623,11 +625,11 @@ const DataProcessingSection = ({ control, errors, patient }) => {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-3 mb-6">
-                <Shield className="w-6 h-6 text-blue-600" />
+                <Shield className="w-6 h-6 text-[rgb(59,185,194)]" />
                 <h2 className="text-xl font-semibold text-gray-800">Informare cu privire la prelucrarea datelor cu caracter personal</h2>
             </div>
 
-            <div className="bg-blue-50 p-6 rounded-xl">
+            <div className="bg-white p-6 rounded-xl">
                 <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                         <div>
@@ -638,7 +640,7 @@ const DataProcessingSection = ({ control, errors, patient }) => {
                                 render={({ field }) => (
                                     <input
                                         {...field}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                         placeholder="Nume complet..."
                                         defaultValue={patient ? `${patient.firstName} ${patient.lastName}` : ''}
                                     />
@@ -653,7 +655,7 @@ const DataProcessingSection = ({ control, errors, patient }) => {
                                 render={({ field }) => (
                                     <input
                                         {...field}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                         placeholder="CNP..."
                                         defaultValue={patient?.CNP || ''}
                                     />
@@ -671,7 +673,7 @@ const DataProcessingSection = ({ control, errors, patient }) => {
                                 render={({ field }) => (
                                     <input
                                         {...field}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                         placeholder="Nume pacient reprezentat..."
                                     />
                                 )}
@@ -685,7 +687,7 @@ const DataProcessingSection = ({ control, errors, patient }) => {
                                 render={({ field }) => (
                                     <input
                                         {...field}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                         placeholder="CNP pacient reprezentat..."
                                     />
                                 )}
@@ -703,7 +705,7 @@ const DataProcessingSection = ({ control, errors, patient }) => {
                                     <input
                                         {...field}
                                         type="date"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                     />
                                 )}
                             />
@@ -716,7 +718,7 @@ const DataProcessingSection = ({ control, errors, patient }) => {
                                 render={({ field }) => (
                                     <input
                                         {...field}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                         placeholder="Numele complet pentru semnătură..."
                                     />
                                 )}
@@ -753,11 +755,11 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-3 mb-6">
-                <FileText className="w-6 h-6 text-green-600" />
+                <img src={logoImage} alt="Logo" className="w-6 h-6" />
                 <h2 className="text-xl font-semibold text-gray-800">Acordul Pacientului Informat -General-</h2>
             </div>
 
-            <div className="bg-green-50 p-6 rounded-xl">
+            <div className="bg-[rgb(59,185,194)]/10 p-6 rounded-xl">
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Pacient</label>
@@ -767,7 +769,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                             render={({ field }) => (
                                 <input
                                     {...field}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                     placeholder="Nume complet pacient..."
                                     defaultValue={patient ? `${patient.firstName} ${patient.lastName}` : ''}
                                 />
@@ -785,7 +787,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                             render={({ field }) => (
                                 <input
                                     {...field}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                     placeholder="Nume complet tutore (dacă este cazul)..."
                                 />
                             )}
@@ -800,7 +802,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                             render={({ field }) => (
                                 <input
                                     {...field}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                     placeholder="Adresa completă..."
                                     defaultValue={patient?.address || ''}
                                 />
@@ -823,7 +825,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                                                 {...field}
                                                 type="checkbox"
                                                 checked={field.value || false}
-                                                className="w-4 h-4 text-green-600 rounded focus:ring-green-500 mr-2"
+                                                className="w-4 h-4 text-[rgb(59,185,194)] rounded focus:ring-[rgb(59,185,194)] mr-2"
                                             />
                                         )}
                                     />
@@ -840,7 +842,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                                 render={({ field }) => (
                                     <input
                                         {...field}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                         placeholder="Specificați alte tratamente..."
                                     />
                                 )}
@@ -856,7 +858,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                             render={({ field }) => (
                                 <input
                                     {...field}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                     placeholder="Numele medicului dentist..."
                                 />
                             )}
@@ -872,7 +874,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                                 render={({ field }) => (
                                     <input
                                         {...field}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                         placeholder="Numele complet pentru semnătură..."
                                     />
                                 )}
@@ -887,7 +889,7 @@ const GeneralConsentSection = ({ control, errors, patient }) => {
                                     <input
                                         {...field}
                                         type="date"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(59,185,194)]"
                                     />
                                 )}
                             />
@@ -1210,8 +1212,17 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
     const [currentSection, setCurrentSection] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [doctors, setDoctors] = useState([]);
+    const [loadingDoctors, setLoadingDoctors] = useState(true);
 
-    const { control, handleSubmit, formState: { errors }, watch, trigger } = useForm({
+    useEffect(() => {
+        ApiService.getAllDentists().then((docs) => {
+            setDoctors(docs);
+            setLoadingDoctors(false);
+        });
+    }, []);
+
+    const { control, handleSubmit, formState: { errors }, watch, trigger, setValue } = useForm({
         mode: 'onChange',
         defaultValues: initialData || {
             // Header info
@@ -1323,7 +1334,10 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
             endo_motiv: '',
             endo_semnatura: '',
             endo_semnatura_2: '',
-            endo_data: ''
+            endo_data: '',
+
+            // New fields
+            dentistid: initialData?.dentistid || ''
         }
     });
 
@@ -1361,6 +1375,7 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
             // Structure data to match backend expectations
             const formData = {
                 pacient_id: patient?.id,
+                dentistid: data.dentistid,
 
                 // Header
                 medic: data.medic,
@@ -1529,14 +1544,51 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
         <div className="min-h-screen p-6">
             <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-3xl shadow-2xl p-8">
+                    {/* Doctor select at the top */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Alegeți doctorul *</label>
+                        {loadingDoctors ? (
+                            <Spin />
+                        ) : (
+                            <Controller
+                                name="dentistid"
+                                control={control}
+                                rules={{ required: 'Doctorul este obligatoriu' }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        showSearch
+                                        placeholder="Selectează doctorul"
+                                        optionFilterProp="children"
+                                        className="w-full"
+                                        value={field.value || undefined}
+                                        onChange={field.onChange}
+                                        filterOption={(input, option) =>
+                                            option.children.toLowerCase().includes(input.toLowerCase())
+                                        }
+                                    >
+                                        {doctors.map((doc) => (
+                                            <Select.Option key={doc.dentistid} value={doc.dentistid}>
+                                                {doc.firstname} {doc.lastname}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
+                                )}
+                            />
+                        )}
+                        {errors.dentistid && (
+                            <p className="text-red-500 text-sm mt-2 flex items-center gap-1 animate-slide-in-left">
+                                {errors.dentistid.message}
+                            </p>
+                        )}
+                    </div>
+
                     {/* Exact PDF Header with Logo Space */}
                     <div className="text-center mb-8 border-b border-gray-200 pb-6">
                         {/* Logo Space */}
-                        <div className="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
+                        <div className="rounded-xl ">
                             <div className="text-center text-gray-400">
-                                <div className="text-4xl mb-2">🦷</div>
-                                <p className="text-sm">DENTAL POINT CLINIC LOGO</p>
-                                <p className="text-xs">(Logo va fi adăugat aici)</p>
+                                <img src={logoImage} alt="Dental Point Clinic Logo" className="h-8 w-auto mx-auto mb-2" />
                             </div>
                         </div>
 
@@ -1557,7 +1609,7 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
                                     render={({ field }) => (
                                         <input
                                             {...field}
-                                            className="border-b border-gray-400 bg-transparent focus:border-blue-500 outline-none flex-1"
+                                            className="border-b border-gray-400 bg-transparent focus:border-[rgb(59,185,194)] outline-none flex-1"
                                             placeholder="__________________________"
                                         />
                                     )}
@@ -1571,7 +1623,7 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
                                     render={({ field }) => (
                                         <input
                                             {...field}
-                                            className="border-b border-gray-400 bg-transparent focus:border-blue-500 outline-none flex-1"
+                                            className="border-b border-gray-400 bg-transparent focus:border-[rgb(59,185,194)] outline-none flex-1"
                                             placeholder="___________"
                                         />
                                     )}
@@ -1586,15 +1638,15 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
                             {sections.map((section, index) => (
                                 <div key={index} className="flex items-center">
                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                                        index < currentSection ? 'bg-green-500 text-white' :
-                                            index === currentSection ? 'bg-blue-500 text-white' :
+                                        index < currentSection ? 'bg-[rgb(59,185,194)] text-white' :
+                                            index === currentSection ? 'bg-[rgb(59,185,194)] text-white' :
                                                 'bg-gray-200 text-gray-600'
                                     }`}>
                                         {index < currentSection ? '✓' : index + 1}
                                     </div>
                                     {index < sections.length - 1 && (
                                         <div className={`w-8 h-1 mx-1 ${
-                                            index < currentSection ? 'bg-green-500' : 'bg-gray-200'
+                                            index < currentSection ? 'bg-[rgb(59,185,194)]' : 'bg-gray-200'
                                         }`} />
                                     )}
                                 </div>
@@ -1631,7 +1683,7 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
                             <button
                                 type="button"
                                 onClick={nextSection}
-                                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                                className="flex items-center gap-2 px-6 py-3 bg-[rgb(59,185,194)] text-white rounded-xl hover:bg-[rgb(59,185,194)]/80"
                             >
                                 Următoarea secțiune →
                             </button>
@@ -1640,7 +1692,7 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
                                 type="button"
                                 onClick={handleSubmit(onSubmit)}
                                 disabled={loading}
-                                className="flex items-center gap-2 px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50"
+                                className="flex items-center gap-2 px-8 py-3 bg-[rgb(59,185,194)] text-white rounded-xl hover:bg-[rgb(59,185,194)]/80 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

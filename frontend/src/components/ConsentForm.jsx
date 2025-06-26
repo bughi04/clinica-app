@@ -219,7 +219,7 @@ Data: ${new Date().toLocaleDateString('ro-RO')}
                             control={control}
                             name="treatmentConsent"
                             title="Consimțământ pentru tratament"
-                            icon={<FileText className="w-6 h-6 text-blue-600" />}
+                            icon={<FileText className="w-6 h-6 text-[rgb(59,185,194)]" />}
                             content="Sunt de acord să primesc tratament stomatologic pe baza informațiilor medicale furnizate. Înțeleg că medicul va lua toate măsurile necesare pentru siguranța mea."
                             error={errors.treatmentConsent}
                         />
@@ -257,7 +257,7 @@ Data: ${new Date().toLocaleDateString('ro-RO')}
                         {/* Digital Signature Section */}
                         <div className="bg-gray-50 p-6 rounded-xl">
                             <div className="flex items-center gap-3 mb-4">
-                                <PenTool className="w-6 h-6 text-blue-600" />
+                                <PenTool className="w-6 h-6 text-[rgb(59,185,194)]" />
                                 <h3 className="text-lg font-semibold text-gray-800">Semnătură Digitală</h3>
                             </div>
 
@@ -276,7 +276,7 @@ Data: ${new Date().toLocaleDateString('ro-RO')}
                                         render={({ field }) => (
                                             <input
                                                 {...field}
-                                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[rgb(59,185,194)] focus:border-transparent"
                                                 placeholder={`${patient?.firstName || ''} ${patient?.lastName || ''}`.trim()}
                                             />
                                         )}
@@ -326,9 +326,9 @@ Data: ${new Date().toLocaleDateString('ro-RO')}
                         </div>
 
                         {/* Summary */}
-                        <div className="bg-blue-50 p-6 rounded-xl">
-                            <h3 className="font-semibold text-blue-800 mb-3">Rezumat</h3>
-                            <div className="space-y-2 text-sm text-blue-700">
+                        <div className="bg-[rgb(59,185,194)]/10 p-6 rounded-xl">
+                            <h3 className="font-semibold text-[rgb(49,175,184)] mb-3">Rezumat</h3>
+                            <div className="space-y-2 text-sm text-[rgb(49,175,184)]">
                                 <p>✓ Informații personale completate</p>
                                 <p>✓ Chestionar medical completat</p>
                                 <p className={allConsentsAgreed ? 'text-green-700' : 'text-orange-700'}>

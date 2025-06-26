@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { ArrowLeft, Save, User, MapPin, CheckCircle, AlertCircle, Phone, Mail, Calendar, CreditCard } from 'lucide-react';
 import FormValidation from '../../../backend/src/models/FormValidation.js';
@@ -10,7 +10,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
     const [error, setError] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const { control, handleSubmit, formState: { errors }, trigger, getValues } = useForm({
+    const { control, handleSubmit, formState: { errors }, trigger, getValues, setValue } = useForm({
         mode: 'onChange',
         defaultValues: {
             firstname: "",

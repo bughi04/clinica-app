@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 import MedicalHistoryForm from './MedicalHistoryForm.jsx';
 
-const QuestionnaireWizard = ({ patient, onComplete, formData, updateFormData }) => {
+const QuestionnaireWizard = ({ patient, onComplete, formData, updateFormData, dentistid }) => {
     const [completedSteps, setCompletedSteps] = useState({});
+
+    // Define the steps for the questionnaire
+    const steps = [
+        { key: 'medical-history', title: 'Chestionar Medical' }
+    ];
 
     const handleMedicalHistoryComplete = (data) => {
         // Update form data
@@ -31,10 +36,10 @@ const QuestionnaireWizard = ({ patient, onComplete, formData, updateFormData }) 
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            {/* Progress Header */}
-            <div className="bg-white shadow-sm">
-                <div className="max-w-4xl mx-auto px-6 py-4">
+        <div className="min-h-screen bg-gradient-to-br from-[rgb(59,185,194)]/10 to-gray-50">
+            <div className="container mx-auto px-4 py-8">
+                {/* Progress Bar */}
+                <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <h1 className="text-2xl font-bold text-gray-800">
@@ -58,11 +63,11 @@ const QuestionnaireWizard = ({ patient, onComplete, formData, updateFormData }) 
 
                     {/* Single Progress Step */}
                     <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-medium">
+                        <div className="w-10 h-10 rounded-full bg-[rgb(59,185,194)] text-white flex items-center justify-center text-sm font-medium">
                             1
                         </div>
                         <div className="ml-3">
-                            <p className="text-sm font-medium text-blue-600">
+                            <p className="text-sm font-medium text-[rgb(59,185,194)]">
                                 Chestionar Medical
                             </p>
                             <p className="text-xs text-gray-400">
@@ -71,18 +76,22 @@ const QuestionnaireWizard = ({ patient, onComplete, formData, updateFormData }) 
                         </div>
                     </div>
                 </div>
+
+                {/* Patient Alerts */}
+                {patient && <PatientAlertsBar patient={patient} />}
+
+                {/* Medical History Form Content */}
+                <MedicalHistoryForm
+                    onComplete={handleMedicalHistoryComplete}
+                    onBack={() => {
+                        // Reset the app state to go back to login page
+                        onComplete(null); // This will trigger the reset in App.jsx
+                    }}
+                    initialData={formData['medical-history']}
+                    patient={patient}
+                    dentistid={dentistid}
+                />
             </div>
-
-            {/* Patient Alerts */}
-            {patient && <PatientAlertsBar patient={patient} />}
-
-            {/* Medical History Form Content */}
-            <MedicalHistoryForm
-                onComplete={handleMedicalHistoryComplete}
-                onBack={() => window.history.back()} // Go back to login/registration
-                initialData={formData['medical-history']}
-                patient={patient}
-            />
         </div>
     );
 };
@@ -158,13 +167,9 @@ const CompletionScreen = ({ patient, onReset }) => {
                     Doctorul va putea vizualiza toate informațiile înainte de consultație.
                 </p>
 
-                <div className="bg-blue-50 p-4 rounded-xl mb-6">
-                    <p className="text-blue-800 text-sm">
-                        ✅ Toate cele 8 secțiuni au fost completate
-                        <br />
-                        ✅ Datele au fost salvate în baza de date
-                        <br />
-                        ✅ Medicul poate acum vizualiza informațiile
+                <div className="bg-[rgb(59,185,194)]/10 p-4 rounded-xl mb-6">
+                    <p className="text-[rgb(49,175,184)] text-sm">
+                        <strong>Notă:</strong> Acest chestionar este necesar pentru a evalua starea de sănătate și a determina riscurile potențiale înainte de tratamentul stomatologic.
                     </p>
                 </div>
 
@@ -176,7 +181,7 @@ const CompletionScreen = ({ patient, onReset }) => {
 
                 <button
                     onClick={onReset}
-                    className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-700 transition-colors"
+                    className="w-full bg-[rgb(59,185,194)] text-white py-3 px-6 rounded-xl font-medium hover:bg-[rgb(49,175,184)] transition-colors"
                 >
                     Înapoi la pagina principală
                 </button>
