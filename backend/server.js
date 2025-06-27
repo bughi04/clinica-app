@@ -457,6 +457,7 @@ app.get("/api/patients/:id", async (req, res) => {
 
 // Save complete questionnaire
 app.post("/api/questionnaires", async (req, res) => {
+  console.log("[DEBUG] POST /api/questionnaires called", req.body);
   try {
     console.log("Saving complete questionnaire:", req.body);
 
@@ -515,14 +516,19 @@ app.post("/api/questionnaires", async (req, res) => {
     await models.DentalRecord.create({
       pacientid: questionnaire.pacientid,
       sanatategingii: examenDentar.sangereaza_gingiile || "NU",
-      sensibilitateDinti: examenDentar.sensibilitate_dinti || "NU",
-      problemeTratamentOrtodontic: examenDentar.probleme_ortodontice || "NU",
+      sensibilitatedinti: examenDentar.sensibilitate_dinti === "DA",
+      problemeTratamentOrtodontic: examenDentar.probleme_ortodontice === "DA",
       scrasnit_inclestat_scrasnit_dinti:
-        examenDentar.scrasnit_inclestat || "NU",
+        examenDentar.scrasnit_inclestat === "DA",
       ultim_consult_stomatologic: examenDentar.data_ultim_consult || "NU",
-      nota_aspect_dentatie: examenDentar.aspect_dentatie || "NU",
-      probleme_tratament_stomatologic_anterior:
-        examenDentar.probleme_tratament_anterior || "NU",
+      nota_aspect_dentatie:
+        examenDentar.aspect_dentatie === "Bun"
+          ? 8
+          : examenDentar.aspect_dentatie === "Mediu"
+          ? 5
+          : examenDentar.aspect_dentatie === "Rău"
+          ? 2
+          : 5,
       data: questionnaire.data_completare,
     });
 
@@ -554,22 +560,44 @@ app.post("/api/questionnaires", async (req, res) => {
     await models.AntecedenteMedicale.create({
       pacientid: questionnaire.pacientid,
       nota_stare_sanatate: stareGen.apreciere_sanatate,
-      ingrijire_alt_medic: stareGen.in_ingrijirea_medic,
-      spitalizare: stareGen.spitalizare_5ani,
+      ingrijire_alt_medic: stareGen.in_ingrijirea_medic === "DA",
+      spitalizare: stareGen.spitalizare_5ani === "DA",
       medicamente: stareGen.lista_medicamente,
-      fumat: stareGen.fumat,
+      fumat: stareGen.fumat === "DA",
       alergii: stareGen.lista_alergii,
-      antidepresive: stareGen.antidepresive,
-      femeie_insarcinata_luna: conditiiFemei.luna_sarcina,
-      femeie_bebe_alaptare: conditiiFemei.alaptare,
+      antidepresive: stareGen.antidepresive === "DA",
+      femeie_insarcinata_luna: conditiiFemei?.luna_sarcina,
+      femeie_bebe_alaptare: conditiiFemei?.alaptare === "DA",
       data: questionnaire.data_completare,
     });
     // --- End sync ---
 
+    // Wait briefly to ensure DB commit
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Recalculate risk using legacy tables and update questionnaire
+    const newRiskLevel = await calculateRiskFromLegacyTables(
+      questionnaire.pacientid,
+      models
+    );
+    console.log(
+      "Updating questionnaire",
+      questionnaire.questionnaireid,
+      "with risk",
+      newRiskLevel
+    );
+    await questionnaire.update({ risk_level: newRiskLevel });
+    console.log(
+      "Updated questionnaire",
+      questionnaire.questionnaireid,
+      "risk_level is now",
+      (await questionnaire.reload()).risk_level
+    );
+
     res.status(201).json({
       id: questionnaire.questionnaireid,
       patientId: questionnaire.pacientid,
-      riskLevel: questionnaire.risk_level || "minimal",
+      riskLevel: newRiskLevel || "minimal",
       medicalAlerts: questionnaire.medical_alerts || [],
       status: questionnaire.status,
       dataCompletare: questionnaire.data_completare,
@@ -640,8 +668,6 @@ app.get("/api/questionnaires/patient/:patientId/latest", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
 
 // Refactored high-risk patients endpoint
 app.get("/api/questionnaires/high-risk", async (req, res) => {
@@ -1328,6 +1354,19 @@ async function calculateRiskFromLegacyTables(pacientid, models) {
     insarcinata = "DA";
   }
 
+  // Debug log for risk calculation
+  console.log("Risk calculation for pacientid", pacientid, {
+    boli_inima_hipertensiune,
+    tulburari_coagulare_sangerari,
+    epilepsie,
+    diabet,
+    hepatita_ciroza,
+    migrene,
+    fumat,
+    alergii,
+    insarcinata,
+  });
+
   // Calculate risk score
   let riskScore = 0;
   if (boli_inima_hipertensiune === "DA") riskScore += 3;
@@ -1402,6 +1441,25 @@ app.post("/api/reports/generate", async (req, res) => {
     return res.status(400).json({ error: "Unknown report type" });
   } catch (error) {
     console.error("Error generating report:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Maintenance endpoint: Update risk_level for all questionnaires
+app.post("/api/questionnaires/update-all-risks", async (req, res) => {
+  try {
+    const questionnaires = await models.Questionnaire.findAll();
+    let updated = 0;
+    for (const q of questionnaires) {
+      const newRisk = await calculateRiskFromLegacyTables(q.pacientid, models);
+      if (q.risk_level !== newRisk) {
+        await q.update({ risk_level: newRisk });
+        updated++;
+      }
+    }
+    res.json({ message: `Updated risk_level for ${updated} questionnaires.` });
+  } catch (error) {
+    console.error("Error updating all questionnaire risks:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
