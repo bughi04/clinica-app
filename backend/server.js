@@ -1417,9 +1417,8 @@ app.post("/api/reports/generate", async (req, res) => {
             email: patient.email,
             submissionDate: q?.data_completare,
             riskLevel: riskLevel,
-            consentGiven: q?.acord_general?.agreed || false,
-            completed:
-              q?.status === "completed" && q?.acord_general?.agreed === true,
+            consentGiven: !!q,
+            completed: !!q,
           };
         })
       );
@@ -1431,7 +1430,25 @@ app.post("/api/reports/generate", async (req, res) => {
           data.length > 0
             ? (data.filter((d) => d.consentGiven).length / data.length) * 100
             : 0,
-        averageRiskScore: 0, // You can calculate this if you have a risk score
+        averageRiskScore:
+          data.length > 0
+            ? (
+                data.reduce((sum, d) => {
+                  switch (d.riskLevel) {
+                    case "high":
+                      return sum + 4;
+                    case "medium":
+                      return sum + 3;
+                    case "low":
+                      return sum + 2;
+                    case "minimal":
+                      return sum + 1;
+                    default:
+                      return sum;
+                  }
+                }, 0) / data.length
+              ).toFixed(2)
+            : 0,
       };
 
       return res.json({ data, statistics });
