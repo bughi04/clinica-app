@@ -53,8 +53,8 @@ const DoctorRegistration = ({ onBack }) => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
-            <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg">
+        <div className="min-h-screen flex items-center justify-center ">
+            <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-2xl">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-lg">

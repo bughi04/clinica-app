@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "description": "Backend API for Dental Point Clinic",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
@@ -30,7 +29,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.0",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0",

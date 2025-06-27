@@ -111,17 +111,12 @@ class PatientList extends Component {
         this.setState({ filteredPatients: filtered });
     };
 
-    getRiskLevel = (patient) => {
-        let riskCount = 0;
-        if (patient.allergies?.length > 0) riskCount++;
-        if (patient.medicalConditions?.length > 0) riskCount++;
-        if (patient.heartIssues) riskCount++;
-        if (patient.anestheticReactions) riskCount++;
-
-        if (riskCount >= 3) return { level: 'Înalt', color: 'red' };
-        if (riskCount >= 2) return { level: 'Mediu', color: 'orange' };
-        if (riskCount >= 1) return { level: 'Scăzut', color: 'yellow' };
-        return { level: 'Minimal', color: 'green' };
+    // Map riskLevel to color and label
+    riskLevelMap = {
+        minimal: { level: 'Minimal', color: 'green' },
+        low: { level: 'Scăzut', color: 'yellow' },
+        medium: { level: 'Mediu', color: 'orange' },
+        high: { level: 'Înalt', color: 'red' },
     };
 
     columns = [
@@ -151,7 +146,7 @@ class PatientList extends Component {
             title: 'Nivel Risc',
             key: 'riskLevel',
             render: (_, record) => {
-                const risk = this.getRiskLevel(record);
+                const risk = this.riskLevelMap[record.riskLevel] || this.riskLevelMap.minimal;
                 return <Tag color={risk.color}>{risk.level}</Tag>;
             },
         },
