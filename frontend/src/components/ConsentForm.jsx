@@ -196,7 +196,7 @@ Data: ${new Date().toLocaleDateString('ro-RO')}
     };
 
     return (
-        <div className="min-h-screen p-6">
+        <div className="min-h-screen p-6 bg-gradient-to-br from-gray-50 to-gray-200">
             <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-3xl shadow-2xl p-8">
                     {/* Header */}

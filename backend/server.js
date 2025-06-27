@@ -1217,6 +1217,57 @@ app.get("/api/dentists", async (req, res) => {
   }
 });
 
+// Reports Generator Endpoint
+app.post("/api/reports/generate", async (req, res) => {
+  try {
+    const { type, filters } = req.body;
+
+    if (type === "patient-summary") {
+      // Fetch all patients with their latest questionnaire
+      const patients = await models.Patient.findAll({
+        include: [
+          {
+            model: models.Questionnaire,
+            as: "questionnaires",
+            order: [["data_completare", "DESC"]],
+            limit: 1,
+          },
+        ],
+      });
+
+      const data = patients.map((patient) => {
+        const q = patient.questionnaires?.[0];
+        return {
+          patientName: `${patient.firstname} ${patient.surname}`,
+          email: patient.email,
+          submissionDate: q?.data_completare,
+          riskLevel: q?.risk_level || "minimal",
+          consentGiven: q?.acord_general?.agreed || false,
+          completed: q?.status === "completed",
+        };
+      });
+
+      const statistics = {
+        totalRecords: data.length,
+        highRiskCount: data.filter((d) => d.riskLevel === "high").length,
+        consentCompliance:
+          data.length > 0
+            ? (data.filter((d) => d.consentGiven).length / data.length) * 100
+            : 0,
+        averageRiskScore: 0, // You can calculate this if you have a risk score
+      };
+
+      return res.json({ data, statistics });
+    }
+
+    // Add more report types as needed...
+    return res.status(400).json({ error: "Unknown report type" });
+  } catch (error) {
+    console.error("Error generating report:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Catch-all error handler
 app.use((error, req, res, next) => {
   console.error("Unhandled error:", error);

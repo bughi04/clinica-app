@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Form, Select, DatePicker, Button, Space, Table, message, Row, Col, Statistic, Progress, Divider } from 'antd';
 import { DownloadOutlined, FileExcelOutlined, FilePdfOutlined, BarChartOutlined, PieChartOutlined } from '@ant-design/icons';
+import ApiService from '../../services/apiService';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -33,165 +34,20 @@ class ReportsGenerator extends Component {
     };
 
     generateReport = async () => {
-        const { reportType } = this.state;
-
+        const { reportType, dateRange } = this.state;
         this.setState({ generateLoading: true });
-
         try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Mock data based on report type
-            let mockData = [];
-            let mockStatistics = {};
-
-            switch (reportType) {
-                case 'patient-summary':
-                    mockData = [
-                        {
-                            patientName: 'Maria Popescu',
-                            email: 'maria.popescu@email.com',
-                            submissionDate: new Date().toISOString(),
-                            riskLevel: 'Mediu',
-                            consentGiven: true
-                        },
-                        {
-                            patientName: 'Ion Ionescu',
-                            email: 'ion.ionescu@email.com',
-                            submissionDate: new Date(Date.now() - 86400000).toISOString(),
-                            riskLevel: 'Înalt',
-                            consentGiven: true
-                        },
-                        {
-                            patientName: 'Ana Testescu',
-                            email: 'ana.test@email.com',
-                            submissionDate: new Date(Date.now() - 172800000).toISOString(),
-                            riskLevel: 'Minimal',
-                            consentGiven: true
-                        }
-                    ];
-                    mockStatistics = {
-                        totalRecords: 3,
-                        highRiskCount: 1,
-                        consentCompliance: 100,
-                        averageRiskScore: 6.5
-                    };
-                    break;
-
-                case 'risk-analysis':
-                    mockData = [
-                        {
-                            patientName: 'Ion Ionescu',
-                            riskFactors: ['Diabet tip 2', 'Probleme cardiace', 'Fumător'],
-                            riskScore: 8,
-                            recommendations: 'Consultație cardiologică înainte de anestezie'
-                        },
-                        {
-                            patientName: 'Maria Popescu',
-                            riskFactors: ['Alergii multiple', 'Hipertensiune'],
-                            riskScore: 6,
-                            recommendations: 'Test alergic înainte de administrarea medicamentelor'
-                        }
-                    ];
-                    mockStatistics = {
-                        totalRecords: 2,
-                        highRiskCount: 1,
-                        averageRiskScore: 7.0
-                    };
-                    break;
-
-                case 'allergy-report':
-                    mockData = [
-                        {
-                            patientName: 'Maria Popescu',
-                            allergies: 'Penicilină, Polen',
-                            severity: 'Moderată',
-                            reportDate: new Date().toISOString()
-                        },
-                        {
-                            patientName: 'Gheorghe Vlad',
-                            allergies: 'Latex',
-                            severity: 'Ușoară',
-                            reportDate: new Date(Date.now() - 259200000).toISOString()
-                        }
-                    ];
-                    mockStatistics = {
-                        totalRecords: 2,
-                        topAllergies: [
-                            { name: 'Penicilină', count: 12 },
-                            { name: 'Latex', count: 8 },
-                            { name: 'Polen', count: 6 },
-                            { name: 'Ibuprofen', count: 4 },
-                            { name: 'Novocaină', count: 3 }
-                        ]
-                    };
-                    break;
-
-                case 'medical-conditions':
-                    mockData = [
-                        {
-                            patientName: 'Ion Ionescu',
-                            conditions: 'Diabet tip 2',
-                            currentMedication: 'Metformin 500mg, Insulină',
-                            lastUpdate: new Date(Date.now() - 86400000).toISOString()
-                        },
-                        {
-                            patientName: 'Maria Popescu',
-                            conditions: 'Hipertensiune arterială',
-                            currentMedication: 'Enalapril 10mg',
-                            lastUpdate: new Date().toISOString()
-                        }
-                    ];
-                    mockStatistics = {
-                        totalRecords: 2,
-                        monthlyTrends: { growth: 15 }
-                    };
-                    break;
-
-                case 'consent-audit':
-                    mockData = [
-                        {
-                            patientName: 'Maria Popescu',
-                            consentType: 'GDPR + General',
-                            status: 'Activ',
-                            signedDate: new Date().toISOString(),
-                            expiryDate: new Date(Date.now() + 31536000000).toISOString() // 1 year
-                        },
-                        {
-                            patientName: 'Ion Ionescu',
-                            consentType: 'GDPR + Endodontic',
-                            status: 'Activ',
-                            signedDate: new Date(Date.now() - 86400000).toISOString(),
-                            expiryDate: new Date(Date.now() + 31449600000).toISOString()
-                        }
-                    ];
-                    mockStatistics = {
-                        totalRecords: 2,
-                        consentCompliance: 100
-                    };
-                    break;
-
-                case 'demographic-analysis':
-                    mockData = [
-                        { ageGroup: '18-30', patientCount: 45, gender: 'Mixt', percentage: 28.8 },
-                        { ageGroup: '31-45', patientCount: 62, gender: 'Mixt', percentage: 39.7 },
-                        { ageGroup: '46-60', patientCount: 35, gender: 'Mixt', percentage: 22.4 },
-                        { ageGroup: '60+', patientCount: 14, gender: 'Mixt', percentage: 9.0 }
-                    ];
-                    mockStatistics = {
-                        totalRecords: 156,
-                        monthlyTrends: { growth: 8 }
-                    };
-                    break;
-
-                default:
-                    mockData = [];
-                    mockStatistics = {};
+            // Prepare filters (add more as needed)
+            const filters = {};
+            if (dateRange && dateRange.length === 2) {
+                filters.startDate = dateRange[0].startOf('day').toISOString();
+                filters.endDate = dateRange[1].endOf('day').toISOString();
             }
-
+            // Fetch real report data from the API
+            const result = await ApiService.generateReport(reportType, filters);
             this.setState({
-                reportData: mockData,
-                reportStatistics: mockStatistics,
+                reportData: result.data || [],
+                reportStatistics: result.statistics || {},
                 generateLoading: false
             });
             message.success('Raportul a fost generat cu succes!');
@@ -300,8 +156,8 @@ class ReportsGenerator extends Component {
                     },
                     {
                         title: 'Acord Semnat',
-                        dataIndex: 'consentGiven',
-                        key: 'consentGiven',
+                        dataIndex: 'completed',
+                        key: 'completed',
                         render: (val) => val ? '✅ Da' : '❌ Nu'
                     }
                 ];
