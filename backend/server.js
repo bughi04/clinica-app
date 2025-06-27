@@ -222,17 +222,22 @@ app.get("/api/patients/cnp/:cnp", async (req, res) => {
 
     const response = {
       id: fullPatient.pacientid.toString(),
-      fullName: `${fullPatient.firstname} ${fullPatient.surname}`,
+      // ❌ REMOVE THIS LINE: fullName: `${fullPatient.firstname} ${fullPatient.surname}`,
+      firstname: fullPatient.firstname,        // ✅ Send separate fields
+      surname: fullPatient.surname,            // ✅ Send separate fields
       firstName: fullPatient.firstname,
       lastName: fullPatient.surname,
       birthDate: fullPatient.birthdate,
       email: fullPatient.email,
-      phone: fullPatient.telefon,
+      telefon: fullPatient.telefon,           // ✅ Use original database field name
+      phone: fullPatient.telefon,             // ✅ Also provide as 'phone' for compatibility
       address: formatAddress(fullPatient.address),
       created_at: fullPatient.created_at,
       doctor: fullPatient.doctor
           ? {
             id: fullPatient.doctor.dentistid,
+            firstname: fullPatient.doctor.firstname,    // ✅ Send separate fields
+            surname: fullPatient.doctor.lastname,       // ✅ Send separate fields
             firstName: fullPatient.doctor.firstname,
             lastName: fullPatient.doctor.lastname,
           }
@@ -414,21 +419,22 @@ app.get("/api/patients/:id", async (req, res) => {
 
     const response = {
       id: patient.pacientid.toString(),
-      // Send separate fields instead of concatenated fullName
+      // ✅ Send separate fields instead of concatenated fullName
       firstname: patient.firstname,
       surname: patient.surname,
       firstName: patient.firstname,
       lastName: patient.surname,
       birthDate: patient.birthdate,
       email: patient.email,
-      phone: patient.telefon,
+      telefon: patient.telefon,        // ✅ Use original database field name
+      phone: patient.telefon,          // ✅ Also provide as 'phone' for compatibility
       address: formatAddress(patient.address),
       created_at: patient.created_at,
       doctor: patient.doctor
           ? {
             id: patient.doctor.dentistid,
-            firstname: patient.doctor.firstname,
-            surname: patient.doctor.lastname,
+            firstname: patient.doctor.firstname,    // ✅ Send separate fields
+            surname: patient.doctor.lastname,       // ✅ Send separate fields
           }
           : null,
 
@@ -445,11 +451,20 @@ app.get("/api/patients/:id", async (req, res) => {
               .map((m) => m.trim())
           : [],
 
-      // Risk information
+      // Risk assessment
       riskLevel: latestQuestionnaire?.risk_level || "minimal",
       medicalAlerts: latestQuestionnaire?.medical_alerts || [],
+
+      // All questionnaires for full medical history
+      questionnaires: patient.questionnaires || [],
+      dentalRecords: patient.dentalRecords || [],
+      medicalHistory: {
+        boala: patient.boala || [],
+        antecedenteMedicale: patient.antecedenteMedicale || [],
+      },
     };
 
+    console.log('🔓 Sending decrypted patient data to frontend');
     res.json(response);
   } catch (error) {
     console.error("Error fetching patient by ID:", error);
@@ -878,16 +893,17 @@ app.get("/api/patients", async (req, res) => {
           latestQuestionnaire?.data_completare || patient.created_at;
       return {
         patientId: patient.pacientid.toString(),
-        // Send separate fields instead of concatenated fullName
+        // ✅ Send separate fields for middleware to decrypt
         firstname: patient.firstname,
         surname: patient.surname,
         email: patient.email,
-        phone: patient.telefon,
+        telefon: patient.telefon,     // ✅ Use original database field name
+        phone: patient.telefon,       // ✅ Also provide as 'phone' for compatibility
         doctor: patient.doctor
             ? {
               id: patient.doctor.dentistid,
-              firstname: patient.doctor.firstname, // Send separate doctor names too
-              surname: patient.doctor.lastname,
+              firstname: patient.doctor.firstname,   // ✅ Send separate fields
+              surname: patient.doctor.lastname,      // ✅ Send separate fields
             }
             : null,
         allergies: latestQuestionnaire?.stare_generala?.lista_alergii

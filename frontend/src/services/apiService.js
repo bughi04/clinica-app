@@ -660,7 +660,7 @@ class ApiService {
             fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
             patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
             // Ensure phone field is available as both 'phone' and original field name
-            phone: patient.phone || patient.telefon,
+            // phone: patient.phone || patient.telefon,
             telefon: patient.telefon,
             doctor: patient.doctor ? {
               ...patient.doctor,

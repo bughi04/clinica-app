@@ -26,7 +26,7 @@ class DataEncryption {
 
     // Define which fields should be encrypted
     this.sensitiveFields = [
-      'firstname', 'surname', 'CNP', 'cnp', 'email', 'telefon',
+      'firstname', 'surname', 'CNP', 'cnp', 'email', 'telefon', 'phone', // ⬅️ Added 'phone'
       'address', 'alergii', 'medicamente', 'nume_reprezentant',
       'firstName', 'lastName' // Add frontend field names too
     ];
