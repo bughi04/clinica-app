@@ -124,8 +124,8 @@ class PatientProfile extends Component {
         console.log('Rendering basic info - questionnaire:', questionnaire);
         console.log('Rendering basic info - questionnaire.data_completare:', questionnaire?.data_completare);
 
-        // Try to get the registration date from different possible sources
-        const registrationDate = patient.created_at || patient.createdAt || null;
+        // Try to get the registration date from created_at only
+        const registrationDate = patient.created_at || null;
         console.log('Registration date:', registrationDate);
 
         // Try to get the last completion date

@@ -28,7 +28,7 @@ class Patient extends Model {
           allowNull: false,
         },
         birthdate: {
-          type: DataTypes.DATEONLY,
+          type: DataTypes.STRING,
           allowNull: false,
         },
         email: {
@@ -110,19 +110,47 @@ class Patient extends Model {
 
   // Calculate the age of the patient based on their birthdate
   getAge() {
-    const today = new Date();
-    const birthDate = new Date(this.birthdate);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
+    try {
+      const today = new Date();
+      let birthDate;
 
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
+      // Try to parse the birthdate - it might be encrypted or plain text
+      if (this.birthdate && typeof this.birthdate === "string") {
+        // Check if it looks like an encrypted string (contains colons and hex)
+        if (
+          this.birthdate.includes(":") &&
+          /^[a-f0-9:]+$/i.test(this.birthdate)
+        ) {
+          // This is encrypted, we can't calculate age without decryption
+          // Return null or a placeholder
+          return null;
+        } else {
+          // This might be a plain date string
+          birthDate = new Date(this.birthdate);
+        }
+      } else {
+        birthDate = new Date(this.birthdate);
+      }
+
+      if (isNaN(birthDate.getTime())) {
+        return null; // Invalid date
+      }
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+
+      return age;
+    } catch (error) {
+      console.warn("Error calculating age from birthdate:", error);
+      return null;
     }
-
-    return age;
   }
 
   // Returns the email and phone as contact info

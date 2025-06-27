@@ -71,7 +71,7 @@ const PatientInfoSection = ({ control, errors, patient }) => (
                 <div><strong>NUME:</strong> {patient?.lastName || '_______________'}</div>
                 <div><strong>PRENUME:</strong> {patient?.firstName || '_______________'}</div>
                 <div><strong>DOMICILIU:</strong> {patient?.address || '_______________'}</div>
-                <div><strong>DATA NAȘTERII:</strong> {patient?.birthdate || '_______________'}</div>
+                <div><strong>DATA NAȘTERII:</strong> {patient?.birthDate || patient?.birthdate || '_______________'}</div>
                 <div><strong>TELEFON:</strong> {patient?.telefon || '_______________'}</div>
                 <div><strong>E-MAIL:</strong> {patient?.email || '_______________'}</div>
             </div>
@@ -1233,7 +1233,7 @@ const MedicalHistoryForm = ({ onComplete, onBack, initialData, patient }) => {
             nume: patient?.lastName || '',
             prenume: patient?.firstName || '',
             domiciliu: patient?.address || '',
-            data_nasterii: patient?.birthdate || '',
+            data_nasterii: patient?.birthDate || patient?.birthdate || '',
             telefon: patient?.telefon || '',
             email: patient?.email || '',
 

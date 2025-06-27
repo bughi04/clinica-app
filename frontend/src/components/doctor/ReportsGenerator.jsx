@@ -371,7 +371,7 @@ class ReportsGenerator extends Component {
 
         return (
             <div className="reports-generator">
-                <Card title="Generator Rapoarte - Dental Point Clinic">
+                <Card title={"Generator Rapoarte - Dental Point Clinic"} style={{ marginBottom: 16 }}>
                     <Form layout="vertical">
                         <Row gutter={16}>
                             <Col span={12}>
