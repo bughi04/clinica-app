@@ -1,24 +1,35 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv"; // ADD THIS LINE
 import { sequelize } from "./src/models/index.js";
 import models from "./src/models/index.js";
+import DataEncryption from './src/services/DataEncryption.js'; // ADD THIS LINE
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const encryption = new DataEncryption();
+
 // Middleware
 app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "http://localhost:5174",
-    ], // React dev servers
-    credentials: true,
-  })
+    cors({
+      origin: [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:5174",
+      ], // React dev servers
+      credentials: true,
+    })
 );
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/patients', encryption.encryptionMiddleware());
+app.use('/api/questionnaires', encryption.encryptionMiddleware());
+app.use('/api/patients', encryption.decryptionMiddleware());
+app.use('/api/questionnaires', encryption.decryptionMiddleware());
 
 // Root route
 app.get("/", (req, res) => {
@@ -26,6 +37,7 @@ app.get("/", (req, res) => {
     message: "Dental Point Clinic API Server - Enhanced",
     status: "Running",
     database: "Connected",
+    encryption: "Active", // ADD THIS LINE
     version: "2.0.0",
     endpoints: {
       health: "/api/health",
@@ -89,9 +101,9 @@ function checkAnestheticReactions(questionnaire) {
   if (!questionnaire) return false;
   const allergies = questionnaire.stare_generala?.lista_alergii || "";
   return (
-    allergies.toLowerCase().includes("anestez") ||
-    allergies.toLowerCase().includes("novocain") ||
-    allergies.toLowerCase().includes("lidocain")
+      allergies.toLowerCase().includes("anestez") ||
+      allergies.toLowerCase().includes("novocain") ||
+      allergies.toLowerCase().includes("lidocain")
   );
 }
 
@@ -211,25 +223,25 @@ app.get("/api/patients/cnp/:cnp", async (req, res) => {
       address: formatAddress(patient.address),
       created_at: patient.created_at,
       doctor: patient.doctor
-        ? {
+          ? {
             id: patient.doctor.dentistid,
             firstName: patient.doctor.firstname,
             lastName: patient.doctor.lastname,
           }
-        : null,
+          : null,
 
       // Medical data from latest questionnaire
       allergies: latestQuestionnaire?.stare_generala?.lista_alergii
-        ? latestQuestionnaire.stare_generala.lista_alergii
-            .split(",")
-            .map((a) => a.trim())
-        : [],
+          ? latestQuestionnaire.stare_generala.lista_alergii
+              .split(",")
+              .map((a) => a.trim())
+          : [],
       chronicConditions: extractMedicalConditions(latestQuestionnaire),
       currentMedications: latestQuestionnaire?.stare_generala?.lista_medicamente
-        ? latestQuestionnaire.stare_generala.lista_medicamente
-            .split(",")
-            .map((m) => m.trim())
-        : [],
+          ? latestQuestionnaire.stare_generala.lista_medicamente
+              .split(",")
+              .map((m) => m.trim())
+          : [],
 
       // Risk information
       riskLevel: latestQuestionnaire?.risk_level || "minimal",
@@ -338,12 +350,12 @@ app.post("/api/patients", async (req, res) => {
       currentMedications: [],
       dentistid: patient.dentistid,
       doctor: patient.doctor
-        ? {
+          ? {
             id: patient.doctor.dentistid,
             firstName: patient.doctor.firstname,
             lastName: patient.doctor.lastname,
           }
-        : null,
+          : null,
     };
 
     console.log("=== RESPONSE DEBUG ===");
@@ -356,8 +368,8 @@ app.post("/api/patients", async (req, res) => {
     console.error("Error creating patient:", error);
     if (error.name === "SequelizeUniqueConstraintError") {
       return res
-        .status(400)
-        .json({ error: "Patient with this CNP or email already exists" });
+          .status(400)
+          .json({ error: "Patient with this CNP or email already exists" });
     }
     res.status(500).json({ error: "Internal server error" });
   }
@@ -411,25 +423,25 @@ app.get("/api/patients/:id", async (req, res) => {
       address: formatAddress(patient.address),
       created_at: patient.created_at,
       doctor: patient.doctor
-        ? {
+          ? {
             id: patient.doctor.dentistid,
             firstName: patient.doctor.firstname,
             lastName: patient.doctor.lastname,
           }
-        : null,
+          : null,
 
       // Medical data from questionnaires
       medicalConditions: extractMedicalConditions(latestQuestionnaire),
       allergies: latestQuestionnaire?.stare_generala?.lista_alergii
-        ? latestQuestionnaire.stare_generala.lista_alergii
-            .split(",")
-            .map((a) => a.trim())
-        : [],
+          ? latestQuestionnaire.stare_generala.lista_alergii
+              .split(",")
+              .map((a) => a.trim())
+          : [],
       currentTreatments: latestQuestionnaire?.stare_generala?.lista_medicamente
-        ? latestQuestionnaire.stare_generala.lista_medicamente
-            .split(",")
-            .map((m) => m.trim())
-        : [],
+          ? latestQuestionnaire.stare_generala.lista_medicamente
+              .split(",")
+              .map((m) => m.trim())
+          : [],
 
       // Risk and alerts
       riskLevel: latestQuestionnaire?.risk_level || "minimal",
@@ -441,10 +453,10 @@ app.get("/api/patients/:id", async (req, res) => {
 
     console.log("Sending response with created_at:", response.created_at);
     console.log(
-      "Patient dentistid:",
-      patient.dentistid,
-      "Doctor:",
-      patient.doctor
+        "Patient dentistid:",
+        patient.dentistid,
+        "Doctor:",
+        patient.doctor
     );
     res.json(response);
   } catch (error) {
@@ -474,43 +486,43 @@ app.post("/api/questionnaires", async (req, res) => {
     const questionnaire = await models.Questionnaire.create(req.body);
 
     console.log(
-      "Complete questionnaire saved with ID:",
-      questionnaire.questionnaireid
+        "Complete questionnaire saved with ID:",
+        questionnaire.questionnaireid
     );
 
     // If dentistid is provided, update the patient
     if (req.body.dentistid && req.body.pacientid) {
       const [count] = await models.Patient.update(
-        { dentistid: req.body.dentistid },
-        { where: { pacientid: req.body.pacientid } }
+          { dentistid: req.body.dentistid },
+          { where: { pacientid: req.body.pacientid } }
       );
       console.log(
-        "Updated patient dentistid:",
-        req.body.pacientid,
-        req.body.dentistid,
-        "Rows affected:",
-        count
+          "Updated patient dentistid:",
+          req.body.pacientid,
+          req.body.dentistid,
+          "Rows affected:",
+          count
       );
     }
 
     // --- Sync to legacy tables ---
     // Parse JSON fields if needed
     const examenDentar =
-      typeof questionnaire.examen_dentar === "string"
-        ? JSON.parse(questionnaire.examen_dentar)
-        : questionnaire.examen_dentar || {};
+        typeof questionnaire.examen_dentar === "string"
+            ? JSON.parse(questionnaire.examen_dentar)
+            : questionnaire.examen_dentar || {};
     const conditiiMed =
-      typeof questionnaire.conditii_medicale === "string"
-        ? JSON.parse(questionnaire.conditii_medicale)
-        : questionnaire.conditii_medicale || {};
+        typeof questionnaire.conditii_medicale === "string"
+            ? JSON.parse(questionnaire.conditii_medicale)
+            : questionnaire.conditii_medicale || {};
     const stareGen =
-      typeof questionnaire.stare_generala === "string"
-        ? JSON.parse(questionnaire.stare_generala)
-        : questionnaire.stare_generala || {};
+        typeof questionnaire.stare_generala === "string"
+            ? JSON.parse(questionnaire.stare_generala)
+            : questionnaire.stare_generala || {};
     const conditiiFemei =
-      typeof questionnaire.conditii_femei === "string"
-        ? JSON.parse(questionnaire.conditii_femei)
-        : questionnaire.conditii_femei || {};
+        typeof questionnaire.conditii_femei === "string"
+            ? JSON.parse(questionnaire.conditii_femei)
+            : questionnaire.conditii_femei || {};
 
     // 1. datestomatologice
     await models.DentalRecord.create({
@@ -519,16 +531,16 @@ app.post("/api/questionnaires", async (req, res) => {
       sensibilitatedinti: examenDentar.sensibilitate_dinti === "DA",
       problemeTratamentOrtodontic: examenDentar.probleme_ortodontice === "DA",
       scrasnit_inclestat_scrasnit_dinti:
-        examenDentar.scrasnit_inclestat === "DA",
+          examenDentar.scrasnit_inclestat === "DA",
       ultim_consult_stomatologic: examenDentar.data_ultim_consult || "NU",
       nota_aspect_dentatie:
-        examenDentar.aspect_dentatie === "Bun"
-          ? 8
-          : examenDentar.aspect_dentatie === "Mediu"
-          ? 5
-          : examenDentar.aspect_dentatie === "Rău"
-          ? 2
-          : 5,
+          examenDentar.aspect_dentatie === "Bun"
+              ? 8
+              : examenDentar.aspect_dentatie === "Mediu"
+                  ? 5
+                  : examenDentar.aspect_dentatie === "Rău"
+                      ? 2
+                      : 5,
       data: questionnaire.data_completare,
     });
 
@@ -542,7 +554,7 @@ app.post("/api/questionnaires", async (req, res) => {
       reumatism: conditiiMed.reumatism_artrita === "DA",
       boli_respiratorii: conditiiMed.boli_respiratorii_astm === "DA",
       tulburari_coagulare_sange:
-        conditiiMed.tulburari_coagulare_sangerari === "DA",
+          conditiiMed.tulburari_coagulare_sangerari === "DA",
       anemie: conditiiMed.anemie_transfuzie === "DA",
       boli_rinichi: conditiiMed.boli_rinichi_litiaza === "DA",
       glaucom: conditiiMed.glaucom === "DA",
@@ -577,21 +589,21 @@ app.post("/api/questionnaires", async (req, res) => {
 
     // Recalculate risk using legacy tables and update questionnaire
     const newRiskLevel = await calculateRiskFromLegacyTables(
-      questionnaire.pacientid,
-      models
+        questionnaire.pacientid,
+        models
     );
     console.log(
-      "Updating questionnaire",
-      questionnaire.questionnaireid,
-      "with risk",
-      newRiskLevel
+        "Updating questionnaire",
+        questionnaire.questionnaireid,
+        "with risk",
+        newRiskLevel
     );
     await questionnaire.update({ risk_level: newRiskLevel });
     console.log(
-      "Updated questionnaire",
-      questionnaire.questionnaireid,
-      "risk_level is now",
-      (await questionnaire.reload()).risk_level
+        "Updated questionnaire",
+        questionnaire.questionnaireid,
+        "risk_level is now",
+        (await questionnaire.reload()).risk_level
     );
 
     res.status(201).json({
@@ -605,8 +617,8 @@ app.post("/api/questionnaires", async (req, res) => {
   } catch (error) {
     console.error("Error saving questionnaire:", error);
     res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
   }
 });
 
@@ -672,11 +684,11 @@ app.get("/api/questionnaires/patient/:patientId/latest", async (req, res) => {
 // Refactored high-risk patients endpoint
 app.get("/api/questionnaires/high-risk", async (req, res) => {
   console.log(
-    "[DEBUG] /api/questionnaires/high-risk called",
-    req.method,
-    req.url,
-    req.query,
-    req.params
+      "[DEBUG] /api/questionnaires/high-risk called",
+      req.method,
+      req.url,
+      req.query,
+      req.params
   );
   try {
     // Get all patients
@@ -685,8 +697,8 @@ app.get("/api/questionnaires/high-risk", async (req, res) => {
     const highRiskPatients = [];
     for (const patient of patients) {
       const riskLevel = await calculateRiskFromLegacyTables(
-        patient.pacientid,
-        models
+          patient.pacientid,
+          models
       );
       if (riskLevel === "high" || riskLevel === "medium") {
         highRiskPatients.push({
@@ -707,11 +719,11 @@ app.get("/api/questionnaires/high-risk", async (req, res) => {
 // Refactored recent questionnaires endpoint
 app.get("/api/questionnaires/recent", async (req, res) => {
   console.log(
-    "[DEBUG] /api/questionnaires/recent called",
-    req.method,
-    req.url,
-    req.query,
-    req.params
+      "[DEBUG] /api/questionnaires/recent called",
+      req.method,
+      req.url,
+      req.query,
+      req.params
   );
   try {
     const limit = parseInt(req.query.limit) || 10;
@@ -723,21 +735,21 @@ app.get("/api/questionnaires/recent", async (req, res) => {
     });
     // For each, calculate risk from legacy tables
     const formattedQuestionnaires = await Promise.all(
-      recent.map(async (q) => {
-        const patient = await models.Patient.findByPk(q.pacientid);
-        const riskLevel = await calculateRiskFromLegacyTables(
-          q.pacientid,
-          models
-        );
-        return {
-          id: q.questionnaireid,
-          patientId: q.pacientid.toString(),
-          patientName: patient ? `${patient.firstname} ${patient.surname}` : "",
-          submissionDate: q.data_completare,
-          riskLevel,
-          status: q.status,
-        };
-      })
+        recent.map(async (q) => {
+          const patient = await models.Patient.findByPk(q.pacientid);
+          const riskLevel = await calculateRiskFromLegacyTables(
+              q.pacientid,
+              models
+          );
+          return {
+            id: q.questionnaireid,
+            patientId: q.pacientid.toString(),
+            patientName: patient ? `${patient.firstname} ${patient.surname}` : "",
+            submissionDate: q.data_completare,
+            riskLevel,
+            status: q.status,
+          };
+        })
     );
     res.json(formattedQuestionnaires);
   } catch (error) {
@@ -773,7 +785,7 @@ app.get("/api/questionnaires/statistics", async (req, res) => {
         status: "completed",
         data_completare: {
           [sequelize.Sequelize.Op.gte]: new Date(
-            Date.now() - 7 * 24 * 60 * 60 * 1000
+              Date.now() - 7 * 24 * 60 * 60 * 1000
           ), // Last 7 days
         },
       },
@@ -867,28 +879,28 @@ app.get("/api/patients", async (req, res) => {
     const formattedPatients = patients.map((patient) => {
       const latestQuestionnaire = patient.questionnaires?.[0];
       const lastQuestionnaireDate =
-        latestQuestionnaire?.data_completare || patient.created_at;
+          latestQuestionnaire?.data_completare || patient.created_at;
       return {
         patientId: patient.pacientid.toString(),
         fullName: `${patient.firstname} ${patient.surname}`,
         email: patient.email,
         phone: patient.telefon,
         doctor: patient.doctor
-          ? {
+            ? {
               id: patient.doctor.dentistid,
               firstName: patient.doctor.firstname,
               lastName: patient.doctor.lastname,
             }
-          : null,
+            : null,
         allergies: latestQuestionnaire?.stare_generala?.lista_alergii
-          ? latestQuestionnaire.stare_generala.lista_alergii
-              .split(",")
-              .map((a) => a.trim())
-          : [],
+            ? latestQuestionnaire.stare_generala.lista_alergii
+                .split(",")
+                .map((a) => a.trim())
+            : [],
         medicalConditions: extractMedicalConditions(latestQuestionnaire),
         heartIssues:
-          latestQuestionnaire?.conditii_medicale?.boli_inima_hipertensiune ===
-          "DA",
+            latestQuestionnaire?.conditii_medicale?.boli_inima_hipertensiune ===
+            "DA",
         anestheticReactions: checkAnestheticReactions(latestQuestionnaire),
         lastQuestionnaireDate: lastQuestionnaireDate,
         riskLevel: latestQuestionnaire?.risk_level || "minimal",
@@ -943,7 +955,7 @@ app.get("/api/dashboard/stats", async (req, res) => {
             status: "completed",
             data_completare: {
               [sequelize.Sequelize.Op.gte]: new Date(
-                Date.now() - 7 * 24 * 60 * 60 * 1000
+                  Date.now() - 7 * 24 * 60 * 60 * 1000
               ),
             },
           },
@@ -971,8 +983,8 @@ app.get("/api/dashboard/stats", async (req, res) => {
     res.json({
       totalPatients,
       pendingQuestionnaires: Math.max(
-        0,
-        questionnaireStats.total - questionnaireStats.recentWeek
+          0,
+          questionnaireStats.total - questionnaireStats.recentWeek
       ),
       riskPatients,
       todayAppointments: 0, // Would need appointments table
@@ -1051,8 +1063,8 @@ app.get("/api/alerts/high-priority", async (req, res) => {
 
     highRiskQuestionnaires.forEach((questionnaire) => {
       if (
-        questionnaire.medical_alerts &&
-        Array.isArray(questionnaire.medical_alerts)
+          questionnaire.medical_alerts &&
+          Array.isArray(questionnaire.medical_alerts)
       ) {
         questionnaire.medical_alerts.forEach((alert) => {
           if (alert.priority === "high" || alert.priority === "medium") {
@@ -1122,8 +1134,8 @@ app.post("/api/auth/login", async (req, res) => {
 
     if (!username || !password) {
       return res
-        .status(400)
-        .json({ error: "Username and password are required" });
+          .status(400)
+          .json({ error: "Username and password are required" });
     }
 
     // Find user by username
@@ -1234,13 +1246,13 @@ app.get("/api/auth/profile/:userId", async (req, res) => {
       type: user.type,
       data_inscriere: user.data_inscriere,
       dentist:
-        user.type === "dentist"
-          ? {
-              firstname: user.firstname,
-              lastname: user.lastname,
-              fullName: `${user.firstname} ${user.lastname}`,
-            }
-          : null,
+          user.type === "dentist"
+              ? {
+                firstname: user.firstname,
+                lastname: user.lastname,
+                fullName: `${user.firstname} ${user.lastname}`,
+              }
+              : null,
     };
 
     res.json(userData);
@@ -1281,11 +1293,11 @@ app.get("/api/debug/patients/:id", async (req, res) => {
 
     // Get raw data from database
     const [results] = await models.sequelize.query(
-      "SELECT * FROM patients WHERE pacientid = ?",
-      {
-        replacements: [id],
-        type: models.sequelize.QueryTypes.SELECT,
-      }
+        "SELECT * FROM patients WHERE pacientid = ?",
+        {
+          replacements: [id],
+          type: models.sequelize.QueryTypes.SELECT,
+        }
     );
 
     if (!results || results.length === 0) {
@@ -1347,9 +1359,9 @@ async function calculateRiskFromLegacyTables(pacientid, models) {
   // insarcinata: check antecedente.femeie_insarcinata_luna (if present and not empty)
   let insarcinata = "NU";
   if (
-    antecedente?.femeie_insarcinata_luna &&
-    antecedente.femeie_insarcinata_luna !== "" &&
-    antecedente.femeie_insarcinata_luna !== null
+      antecedente?.femeie_insarcinata_luna &&
+      antecedente.femeie_insarcinata_luna !== "" &&
+      antecedente.femeie_insarcinata_luna !== null
   ) {
     insarcinata = "DA";
   }
@@ -1406,49 +1418,49 @@ app.post("/api/reports/generate", async (req, res) => {
 
       // For each patient, calculate risk from legacy tables
       const data = await Promise.all(
-        patients.map(async (patient) => {
-          const q = patient.questionnaires?.[0];
-          const riskLevel = await calculateRiskFromLegacyTables(
-            patient.pacientid,
-            models
-          );
-          return {
-            patientName: `${patient.firstname} ${patient.surname}`,
-            email: patient.email,
-            submissionDate: q?.data_completare,
-            riskLevel: riskLevel,
-            consentGiven: !!q,
-            completed: !!q,
-          };
-        })
+          patients.map(async (patient) => {
+            const q = patient.questionnaires?.[0];
+            const riskLevel = await calculateRiskFromLegacyTables(
+                patient.pacientid,
+                models
+            );
+            return {
+              patientName: `${patient.firstname} ${patient.surname}`,
+              email: patient.email,
+              submissionDate: q?.data_completare,
+              riskLevel: riskLevel,
+              consentGiven: !!q,
+              completed: !!q,
+            };
+          })
       );
 
       const statistics = {
         totalRecords: data.length,
         highRiskCount: data.filter((d) => d.riskLevel === "high").length,
         consentCompliance:
-          data.length > 0
-            ? (data.filter((d) => d.consentGiven).length / data.length) * 100
-            : 0,
+            data.length > 0
+                ? (data.filter((d) => d.consentGiven).length / data.length) * 100
+                : 0,
         averageRiskScore:
-          data.length > 0
-            ? (
-                data.reduce((sum, d) => {
-                  switch (d.riskLevel) {
-                    case "high":
-                      return sum + 4;
-                    case "medium":
-                      return sum + 3;
-                    case "low":
-                      return sum + 2;
-                    case "minimal":
-                      return sum + 1;
-                    default:
-                      return sum;
-                  }
-                }, 0) / data.length
-              ).toFixed(2)
-            : 0,
+            data.length > 0
+                ? (
+                    data.reduce((sum, d) => {
+                      switch (d.riskLevel) {
+                        case "high":
+                          return sum + 4;
+                        case "medium":
+                          return sum + 3;
+                        case "low":
+                          return sum + 2;
+                        case "minimal":
+                          return sum + 1;
+                        default:
+                          return sum;
+                      }
+                    }, 0) / data.length
+                ).toFixed(2)
+                : 0,
       };
 
       return res.json({ data, statistics });
