@@ -27,7 +27,8 @@ class DataEncryption {
     // Define which fields should be encrypted
     this.sensitiveFields = [
       'firstname', 'surname', 'CNP', 'cnp', 'email', 'telefon',
-      'address', 'alergii', 'medicamente', 'nume_reprezentant'
+      'address', 'alergii', 'medicamente', 'nume_reprezentant',
+      'firstName', 'lastName' // Add frontend field names too
     ];
   }
 
@@ -106,6 +107,7 @@ class DataEncryption {
 
     this.sensitiveFields.forEach(field => {
       if (decrypted[field] && typeof decrypted[field] === 'string') {
+        console.log(`🔓 Decrypting field: ${field}`);
         decrypted[field] = this.decryptField(decrypted[field]);
       }
     });
@@ -135,23 +137,110 @@ class DataEncryption {
 
   // Middleware for automatic decryption on outgoing responses
   decryptionMiddleware() {
+    const self = this; // Capture the context
+
     return (req, res, next) => {
       const originalJson = res.json;
 
-      res.json = (obj) => {
+      res.json = function(obj) {
         if (obj && typeof obj === 'object') {
-          console.log('🔓 MIDDLEWARE: Decrypting response data...');
-          if (Array.isArray(obj)) {
-            obj = obj.map(item => this.decryptObject(item));
-          } else {
-            obj = this.decryptObject(obj);
+          console.log('🔓 MIDDLEWARE: Decrypting response data for:', req.originalUrl);
+          console.log('🔍 Response object keys:', Object.keys(obj));
+
+          try {
+            if (Array.isArray(obj)) {
+              obj = obj.map(item => {
+                const decrypted = self.decryptObject(item);
+                console.log('🔄 Array item decrypted');
+                return decrypted;
+              });
+            } else {
+              obj = self.decryptObject(obj);
+              console.log('🔄 Object decrypted');
+            }
+            console.log('✅ Response decryption completed');
+          } catch (error) {
+            console.error('❌ Decryption middleware error:', error);
           }
         }
-        originalJson.call(res, obj);
+        originalJson.call(this, obj);
       };
 
       next();
     };
+  }
+
+  // Search for patients by CNP (handles both encrypted and unencrypted)
+  async findPatientByCNP(cnp, models) {
+    console.log('🔍 Searching for patient with CNP:', cnp);
+
+    // First, try to find by plain text CNP (for existing unencrypted data)
+    let patient = await models.Patient.findOne({ where: { cnp } });
+
+    if (patient) {
+      console.log('✅ Found patient by plain text CNP');
+      return patient;
+    }
+
+    // If not found, we need to check all patients and decrypt their CNPs
+    // This is because each encryption creates a different result due to random IV
+    console.log('🔒 Searching by decrypting all CNPs...');
+
+    const allPatients = await models.Patient.findAll({
+      attributes: ['pacientid', 'cnp']
+    });
+
+    console.log(`🔍 Checking ${allPatients.length} patients...`);
+
+    for (const patient of allPatients) {
+      try {
+        const decryptedCNP = this.decryptField(patient.cnp);
+        if (decryptedCNP === cnp) {
+          console.log('✅ Found patient by decrypting CNP, patient ID:', patient.pacientid);
+          return patient;
+        }
+      } catch (error) {
+        // Skip patients with invalid encrypted data
+        continue;
+      }
+    }
+
+    console.log('❌ Patient not found after checking all encrypted CNPs');
+    return null;
+  }
+
+  // Search for patients by email
+  async findPatientByEmail(email, models) {
+    console.log('🔍 Searching for patient with email:', email);
+
+    // First try plain text
+    let patient = await models.Patient.findOne({ where: { email } });
+    if (patient) {
+      console.log('✅ Found patient by plain text email');
+      return patient;
+    }
+
+    // If not found, check all patients and decrypt their emails
+    console.log('🔒 Searching by decrypting all emails...');
+
+    const allPatients = await models.Patient.findAll({
+      attributes: ['pacientid', 'email']
+    });
+
+    for (const patient of allPatients) {
+      try {
+        const decryptedEmail = this.decryptField(patient.email);
+        if (decryptedEmail === email) {
+          console.log('✅ Found patient by decrypting email, patient ID:', patient.pacientid);
+          return patient;
+        }
+      } catch (error) {
+        continue;
+      }
+    }
+
+    console.log('❌ Patient not found by email');
+    return null;
   }
 }
 

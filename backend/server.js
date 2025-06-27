@@ -189,8 +189,20 @@ function formatAddressObject(addressObj) {
 app.get("/api/patients/cnp/:cnp", async (req, res) => {
   try {
     const { cnp } = req.params;
-    const patient = await models.Patient.findOne({
-      where: { cnp },
+    console.log('🔍 CNP lookup request for:', cnp);
+
+    // Use the encryption service to find patient (handles both encrypted and unencrypted)
+    const patient = await encryption.findPatientByCNP(cnp, models);
+
+    if (!patient) {
+      console.log('❌ Patient not found for CNP:', cnp);
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    console.log('✅ Patient found, loading related data...');
+
+    // Get the full patient data with includes
+    const fullPatient = await models.Patient.findByPk(patient.pacientid, {
       include: [
         {
           model: models.Questionnaire,
@@ -205,28 +217,24 @@ app.get("/api/patients/cnp/:cnp", async (req, res) => {
       ],
     });
 
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
-    }
-
     // Format response to match frontend expectations
-    const latestQuestionnaire = patient.questionnaires?.[0];
+    const latestQuestionnaire = fullPatient.questionnaires?.[0];
 
     const response = {
-      id: patient.pacientid.toString(),
-      fullName: `${patient.firstname} ${patient.surname}`,
-      firstName: patient.firstname,
-      lastName: patient.surname,
-      birthDate: patient.birthdate,
-      email: patient.email,
-      phone: patient.telefon,
-      address: formatAddress(patient.address),
-      created_at: patient.created_at,
-      doctor: patient.doctor
+      id: fullPatient.pacientid.toString(),
+      fullName: `${fullPatient.firstname} ${fullPatient.surname}`,
+      firstName: fullPatient.firstname,
+      lastName: fullPatient.surname,
+      birthDate: fullPatient.birthdate,
+      email: fullPatient.email,
+      phone: fullPatient.telefon,
+      address: formatAddress(fullPatient.address),
+      created_at: fullPatient.created_at,
+      doctor: fullPatient.doctor
           ? {
-            id: patient.doctor.dentistid,
-            firstName: patient.doctor.firstname,
-            lastName: patient.doctor.lastname,
+            id: fullPatient.doctor.dentistid,
+            firstName: fullPatient.doctor.firstname,
+            lastName: fullPatient.doctor.lastname,
           }
           : null,
 
@@ -248,6 +256,7 @@ app.get("/api/patients/cnp/:cnp", async (req, res) => {
       medicalAlerts: latestQuestionnaire?.medical_alerts || [],
     };
 
+    console.log('🔓 Sending decrypted patient data to frontend');
     res.json(response);
   } catch (error) {
     console.error("Error fetching patient by CNP:", error);
