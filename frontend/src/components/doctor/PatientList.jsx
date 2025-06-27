@@ -125,12 +125,24 @@ class PatientList extends Component {
             dataIndex: 'fullName',
             key: 'fullName',
             sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+            render: (text, record) => {
+                // Create fullName from firstname + surname if it doesn't exist
+                const displayName = text || `${record.firstname || ''} ${record.surname || ''}`.trim();
+                console.log('Rendering patient name:', displayName, 'from record:', record); // Debug
+                return displayName || 'N/A';
+            }
         },
         {
             title: 'Doctor',
             dataIndex: 'doctor',
             key: 'doctor',
-            render: (doctor) => doctor ? `${doctor.firstName} ${doctor.lastName}` : 'Nespecificat',
+            render: (doctor) => {
+                if (!doctor) return 'Nespecificat';
+                // Handle both old and new format
+                const doctorName = doctor.fullName ||
+                    `${doctor.firstName || doctor.firstname || ''} ${doctor.lastName || doctor.surname || ''}`.trim();
+                return doctorName || 'Nespecificat';
+            }
         },
         {
             title: 'Email',
@@ -141,6 +153,12 @@ class PatientList extends Component {
             title: 'Telefon',
             dataIndex: 'phone',
             key: 'phone',
+            render: (phone, record) => {
+                // Try multiple field names for phone
+                const displayPhone = phone || record.telefon || record.telephone;
+                console.log('Rendering phone:', displayPhone, 'from record:', record); // Debug
+                return displayPhone || 'N/A';
+            }
         },
         {
             title: 'Nivel Risc',

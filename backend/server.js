@@ -410,20 +410,13 @@ app.get("/api/patients/:id", async (req, res) => {
       return res.status(404).json({ message: "Patient not found" });
     }
 
-    console.log("Raw patient data from DB:", {
-      pacientid: patient.pacientid,
-      firstname: patient.firstname,
-      surname: patient.surname,
-      created_at: patient.created_at,
-      updated_at: patient.updated_at,
-      dataValues: patient.dataValues,
-    });
-
     const latestQuestionnaire = patient.questionnaires?.[0];
 
     const response = {
       id: patient.pacientid.toString(),
-      fullName: `${patient.firstname} ${patient.surname}`,
+      // Send separate fields instead of concatenated fullName
+      firstname: patient.firstname,
+      surname: patient.surname,
       firstName: patient.firstname,
       lastName: patient.surname,
       birthDate: patient.birthdate,
@@ -434,8 +427,8 @@ app.get("/api/patients/:id", async (req, res) => {
       doctor: patient.doctor
           ? {
             id: patient.doctor.dentistid,
-            firstName: patient.doctor.firstname,
-            lastName: patient.doctor.lastname,
+            firstname: patient.doctor.firstname,
+            surname: patient.doctor.lastname,
           }
           : null,
 
@@ -452,24 +445,14 @@ app.get("/api/patients/:id", async (req, res) => {
               .map((m) => m.trim())
           : [],
 
-      // Risk and alerts
+      // Risk information
       riskLevel: latestQuestionnaire?.risk_level || "minimal",
       medicalAlerts: latestQuestionnaire?.medical_alerts || [],
-
-      // All questionnaires
-      questionnaires: patient.questionnaires || [],
     };
 
-    console.log("Sending response with created_at:", response.created_at);
-    console.log(
-        "Patient dentistid:",
-        patient.dentistid,
-        "Doctor:",
-        patient.doctor
-    );
     res.json(response);
   } catch (error) {
-    console.error("Error fetching patient:", error);
+    console.error("Error fetching patient by ID:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -710,11 +693,14 @@ app.get("/api/questionnaires/high-risk", async (req, res) => {
           models
       );
       if (riskLevel === "high" || riskLevel === "medium") {
+        // Send separate fields instead of concatenated patientName
         highRiskPatients.push({
           patientId: patient.pacientid.toString(),
-          patientName: `${patient.firstname} ${patient.surname}`,
+          firstname: patient.firstname,
+          surname: patient.surname,
+          email: patient.email,
+          telefon: patient.telefon,
           riskLevel,
-          // Optionally add more fields as needed
         });
       }
     }
@@ -750,10 +736,16 @@ app.get("/api/questionnaires/recent", async (req, res) => {
               q.pacientid,
               models
           );
+
+          // Return separate fields for middleware to decrypt, not concatenated strings
           return {
             id: q.questionnaireid,
             patientId: q.pacientid.toString(),
-            patientName: patient ? `${patient.firstname} ${patient.surname}` : "",
+            // Send separate fields instead of concatenated patientName
+            firstname: patient ? patient.firstname : "",
+            surname: patient ? patient.surname : "",
+            email: patient ? patient.email : "",
+            telefon: patient ? patient.telefon : "",
             submissionDate: q.data_completare,
             riskLevel,
             status: q.status,
@@ -823,12 +815,6 @@ app.get("/api/questionnaires/:id", async (req, res) => {
     if (isNaN(id)) {
       return res.status(400).json({ error: "Invalid questionnaire ID" });
     }
-    console.log("Received ID:", req.params.id);
-
-    // // Validate that id is a number
-    // if (isNaN(parseInt(id))) {
-    //   return res.status(400).json({ error: "Invalid questionnaire ID" });
-    // }
 
     if (!models.Questionnaire) {
       return res.status(404).json({ message: "Questionnaire not found" });
@@ -848,6 +834,7 @@ app.get("/api/questionnaires/:id", async (req, res) => {
       return res.status(404).json({ message: "Questionnaire not found" });
     }
 
+    // Don't modify the questionnaire, let middleware handle the patient data decryption
     res.json(questionnaire);
   } catch (error) {
     console.error("Error fetching questionnaire:", error);
@@ -891,14 +878,16 @@ app.get("/api/patients", async (req, res) => {
           latestQuestionnaire?.data_completare || patient.created_at;
       return {
         patientId: patient.pacientid.toString(),
-        fullName: `${patient.firstname} ${patient.surname}`,
+        // Send separate fields instead of concatenated fullName
+        firstname: patient.firstname,
+        surname: patient.surname,
         email: patient.email,
         phone: patient.telefon,
         doctor: patient.doctor
             ? {
               id: patient.doctor.dentistid,
-              firstName: patient.doctor.firstname,
-              lastName: patient.doctor.lastname,
+              firstname: patient.doctor.firstname, // Send separate doctor names too
+              surname: patient.doctor.lastname,
             }
             : null,
         allergies: latestQuestionnaire?.stare_generala?.lista_alergii
@@ -1080,7 +1069,10 @@ app.get("/api/alerts/high-priority", async (req, res) => {
             alerts.push({
               id: `${questionnaire.questionnaireid}-${alerts.length}`,
               patientId: questionnaire.patient.pacientid.toString(),
-              patientName: `${questionnaire.patient.firstname} ${questionnaire.patient.surname}`,
+              // Send separate fields instead of concatenated patientName
+              firstname: questionnaire.patient.firstname,
+              surname: questionnaire.patient.surname,
+              email: questionnaire.patient.email,
               message: alert.message,
               type: alert.type,
               priority: alert.priority,
@@ -1434,7 +1426,9 @@ app.post("/api/reports/generate", async (req, res) => {
                 models
             );
             return {
-              patientName: `${patient.firstname} ${patient.surname}`,
+              // Send separate fields instead of concatenated patientName
+              firstname: patient.firstname,
+              surname: patient.surname,
               email: patient.email,
               submissionDate: q?.data_completare,
               riskLevel: riskLevel,

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Vite uses import.meta.env instead of process.env
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+    import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -14,31 +14,31 @@ const apiClient = axios.create({
 
 // Request interceptor for debugging
 apiClient.interceptors.request.use(
-  (config) => {
-    console.log(
-      "API Request:",
-      config.method?.toUpperCase(),
-      config.url,
-      config.data
-    );
-    return config;
-  },
-  (error) => {
-    console.error("API Request Error:", error);
-    return Promise.reject(error);
-  }
+    (config) => {
+      console.log(
+          "API Request:",
+          config.method?.toUpperCase(),
+          config.url,
+          config.data
+      );
+      return config;
+    },
+    (error) => {
+      console.error("API Request Error:", error);
+      return Promise.reject(error);
+    }
 );
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
-  (response) => {
-    console.log("API Response:", response.status, response.data);
-    return response;
-  },
-  (error) => {
-    console.error("API Response Error:", error.response?.data || error.message);
-    return Promise.reject(error);
-  }
+    (response) => {
+      console.log("API Response:", response.status, response.data);
+      return response;
+    },
+    (error) => {
+      console.error("API Response Error:", error.response?.data || error.message);
+      return Promise.reject(error);
+    }
 );
 
 class ApiService {
@@ -57,7 +57,7 @@ class ApiService {
         throw new Error("Invalid credentials");
       } else if (error.response?.status === 403) {
         throw new Error(
-          "Access denied. Only dentists can access this interface."
+            "Access denied. Only dentists can access this interface."
         );
       }
       throw error;
@@ -113,17 +113,50 @@ class ApiService {
 
   // Get patient by ID with full medical data
   static async getPatientById(patientId) {
-    const response = await apiClient.get(`/patients/${patientId}`);
-    return response.data;
+    try {
+      const response = await apiClient.get(`/patients/${patientId}`);
+
+      console.log('Raw patient by ID from API:', response.data); // Debug
+
+      // Transform the response to combine firstname + surname and fix phone
+      const patient = response.data;
+      const transformed = {
+        ...patient,
+        fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        // Ensure phone field is available
+        phone: patient.phone || patient.telefon,
+        telefon: patient.telefon,
+        doctor: patient.doctor ? {
+          ...patient.doctor,
+          fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim(),
+          firstName: patient.doctor.firstname,
+          lastName: patient.doctor.surname
+        } : null
+      };
+
+      console.log('Transformed patient by ID:', transformed); // Debug
+      return transformed;
+    } catch (error) {
+      console.error("Error fetching patient by ID:", error);
+      throw error;
+    }
   }
 
   // Get existing questionnaires for a patient
   static async getPatientQuestionnaires(patientId) {
     try {
-      const response = await apiClient.get(
-        `/questionnaires/patient/${patientId}`
-      );
-      return response.data;
+      const response = await apiClient.get(`/questionnaires/patient/${patientId}`);
+
+      // Transform questionnaire data to handle nested patient info
+      return response.data.map(questionnaire => ({
+        ...questionnaire,
+        patient: questionnaire.patient ? {
+          ...questionnaire.patient,
+          fullName: `${questionnaire.patient.firstname || ''} ${questionnaire.patient.surname || ''}`.trim(),
+          patientName: `${questionnaire.patient.firstname || ''} ${questionnaire.patient.surname || ''}`.trim()
+        } : null
+      }));
     } catch (error) {
       console.warn("No existing questionnaires found for patient:", patientId);
       return [];
@@ -154,7 +187,7 @@ class ApiService {
         indrumare_internet: questionnaireData.indrumare?.internet || false,
         indrumare_altele: questionnaireData.indrumare?.altele || false,
         indrumare_altele_detalii:
-          questionnaireData.indrumare?.altele_detalii || null,
+            questionnaireData.indrumare?.altele_detalii || null,
 
         // Store complex data as JSON
         examen_dentar: questionnaireData.examen_dentar || {},
@@ -168,9 +201,9 @@ class ApiService {
 
         // Metadata
         data_completare:
-          questionnaireData.data_completare || new Date().toISOString(),
+            questionnaireData.data_completare || new Date().toISOString(),
         versiune_formular:
-          questionnaireData.versiune_formular || "PDF_COMPLETE_V2",
+            questionnaireData.versiune_formular || "PDF_COMPLETE_V2",
         status: questionnaireData.status || "completed",
       });
 
@@ -178,8 +211,8 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.warn(
-        "Enhanced questionnaire save failed, falling back to legacy method:",
-        error.message
+          "Enhanced questionnaire save failed, falling back to legacy method:",
+          error.message
       );
 
       // Fallback to legacy method
@@ -196,18 +229,18 @@ class ApiService {
       const dentalResponse = await apiClient.post("/dental-records", {
         pacientid: questionnaireData.pacient_id,
         sanatategingii:
-          questionnaireData.examen_dentar?.sangereaza_gingiile || "Nu",
+            questionnaireData.examen_dentar?.sangereaza_gingiile || "Nu",
         sensibilitatedinti:
-          questionnaireData.examen_dentar?.sensibilitate_dinti === "DA",
+            questionnaireData.examen_dentar?.sensibilitate_dinti === "DA",
         problemetratamentortodontic:
-          questionnaireData.examen_dentar?.probleme_ortodontice || null,
+            questionnaireData.examen_dentar?.probleme_ortodontice || null,
         scrasnit_inclestat_scrasnit_dinti:
-          questionnaireData.examen_dentar?.scrasnit_inclestat === "DA",
+            questionnaireData.examen_dentar?.scrasnit_inclestat === "DA",
         ultim_consult_stomatologic:
-          questionnaireData.examen_dentar?.data_ultim_consult || null,
+            questionnaireData.examen_dentar?.data_ultim_consult || null,
         nota_aspect_dentatie: 5, // Default value
         probleme_tratament_stomatologic_anterior:
-          questionnaireData.examen_dentar?.probleme_tratament_anterior || null,
+            questionnaireData.examen_dentar?.probleme_tratament_anterior || null,
         data: new Date().toISOString().split("T")[0],
       });
 
@@ -215,62 +248,62 @@ class ApiService {
       const boliResponse = await apiClient.post("/diseases", {
         pacientid: questionnaireData.pacient_id,
         boli_inima:
-          questionnaireData.conditii_medicale?.boli_inima_hipertensiune ===
-          "DA",
+            questionnaireData.conditii_medicale?.boli_inima_hipertensiune ===
+            "DA",
         purtator_proteza:
-          questionnaireData.conditii_medicale?.purtator_proteza_valvulara ===
-          "DA",
+            questionnaireData.conditii_medicale?.purtator_proteza_valvulara ===
+            "DA",
         diabet: questionnaireData.conditii_medicale?.diabet === "DA",
         hepatita:
-          questionnaireData.conditii_medicale?.hepatita_abc_ciroza === "DA",
+            questionnaireData.conditii_medicale?.hepatita_abc_ciroza === "DA",
         reumatism:
-          questionnaireData.conditii_medicale?.reumatism_artrita === "DA",
+            questionnaireData.conditii_medicale?.reumatism_artrita === "DA",
         boli_respiratorii:
-          questionnaireData.conditii_medicale?.boli_respiratorii_astm === "DA",
+            questionnaireData.conditii_medicale?.boli_respiratorii_astm === "DA",
         tulburari_coagulare_sange:
-          questionnaireData.conditii_medicale?.tulburari_coagulare_sangerari ===
-          "DA",
+            questionnaireData.conditii_medicale?.tulburari_coagulare_sangerari ===
+            "DA",
         anemie: questionnaireData.conditii_medicale?.anemie_transfuzie === "DA",
         boli_rinichi:
-          questionnaireData.conditii_medicale?.boli_rinichi_litiaza === "DA",
+            questionnaireData.conditii_medicale?.boli_rinichi_litiaza === "DA",
         glaucom: questionnaireData.conditii_medicale?.glaucom === "DA",
         epilepsie: questionnaireData.conditii_medicale?.epilepsie === "DA",
         migrene: questionnaireData.conditii_medicale?.migrene === "DA",
         osteoporoza: questionnaireData.conditii_medicale?.osteoporoza === "DA",
         ulcer_gastric:
-          questionnaireData.conditii_medicale?.ulcer_gastric === "DA",
+            questionnaireData.conditii_medicale?.ulcer_gastric === "DA",
         boli_tiroida:
-          questionnaireData.conditii_medicale?.boli_tiroida === "DA",
+            questionnaireData.conditii_medicale?.boli_tiroida === "DA",
         boli_neurologice:
-          questionnaireData.conditii_medicale?.boli_neurologice === "DA",
+            questionnaireData.conditii_medicale?.boli_neurologice === "DA",
         probleme_psihice:
-          questionnaireData.conditii_medicale?.probleme_psihice === "DA",
+            questionnaireData.conditii_medicale?.probleme_psihice === "DA",
         alte_boli:
-          questionnaireData.conditii_medicale?.alte_boli_detalii || null,
+            questionnaireData.conditii_medicale?.alte_boli_detalii || null,
       });
 
       // Save medical history (antecedents)
       const antecdenteResponse = await apiClient.post("/medical-history", {
         pacientid: questionnaireData.pacient_id,
         nota_stare_sanatate:
-          questionnaireData.stare_generala?.apreciere_sanatate || "",
+            questionnaireData.stare_generala?.apreciere_sanatate || "",
         ingrijire_alt_medic:
-          questionnaireData.stare_generala?.in_ingrijirea_medic === "DA",
+            questionnaireData.stare_generala?.in_ingrijirea_medic === "DA",
         spitalizare:
-          questionnaireData.stare_generala?.spitalizare_5ani === "DA"
-            ? questionnaireData.stare_generala?.motiv_spitalizare || "Da"
-            : "Nu",
+            questionnaireData.stare_generala?.spitalizare_5ani === "DA"
+                ? questionnaireData.stare_generala?.motiv_spitalizare || "Da"
+                : "Nu",
         medicamente:
-          questionnaireData.stare_generala?.lista_medicamente || "Nu",
+            questionnaireData.stare_generala?.lista_medicamente || "Nu",
         fumat: questionnaireData.stare_generala?.fumat === "DA",
         alergii: questionnaireData.stare_generala?.lista_alergii || "Nu",
         antidepresive: questionnaireData.stare_generala?.antidepresive === "DA",
         femeie_insarcinata_luna:
-          questionnaireData.conditii_femei?.insarcinata === "DA"
-            ? questionnaireData.conditii_femei?.luna_sarcina || "Da"
-            : null,
+            questionnaireData.conditii_femei?.insarcinata === "DA"
+                ? questionnaireData.conditii_femei?.luna_sarcina || "Da"
+                : null,
         femeie_bebe_alaptare:
-          questionnaireData.conditii_femei?.alaptare === "DA",
+            questionnaireData.conditii_femei?.alaptare === "DA",
         data: new Date().toISOString().split("T")[0],
       });
 
@@ -295,8 +328,8 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.warn(
-        "Dashboard stats failed, using fallback data:",
-        error.message
+          "Dashboard stats failed, using fallback data:",
+          error.message
       );
 
       // Fallback to basic patient count
@@ -333,36 +366,20 @@ class ApiService {
   // Get recent questionnaires with fallback
   static async getRecentQuestionnaires(limit = 10) {
     try {
-      const response = await apiClient.get(
-        `/questionnaires/recent?limit=${limit}`
-      );
-      return response.data;
+      const response = await apiClient.get(`/questionnaires/recent?limit=${limit}`);
+
+      // Now the API returns separate firstname, surname fields instead of patientName
+      return response.data.map(item => ({
+        ...item,
+        patientName: `${item.firstname || ''} ${item.surname || ''}`.trim(), // Combine here
+        patientId: item.patientId,
+        submissionDate: item.submissionDate,
+        riskLevel: item.riskLevel,
+        status: item.status
+      }));
     } catch (error) {
-      console.warn(
-        "Recent questionnaires failed, using fallback:",
-        error.message
-      );
-
-      // Fallback to mock data based on existing patients
-      try {
-        const patientsResponse = await apiClient.get(
-          `/patients?limit=${limit}`
-        );
-        const patients = patientsResponse.data.patients || [];
-
-        return patients.map((patient, index) => ({
-          id: `mock-${index}`,
-          patientId: patient.patientId,
-          patientName: patient.fullName,
-          submissionDate: new Date(
-            Date.now() - index * 24 * 60 * 60 * 1000
-          ).toISOString(),
-          riskLevel: patient.riskLevel || "minimal",
-          status: "completed",
-        }));
-      } catch (fallbackError) {
-        return [];
-      }
+      console.warn("Recent questionnaires failed:", error.message);
+      return [];
     }
   }
 
@@ -370,53 +387,15 @@ class ApiService {
   static async getHighPriorityAlerts() {
     try {
       const response = await apiClient.get("/alerts/high-priority");
-      return response.data;
+
+      // Now the API returns separate firstname, surname fields
+      return response.data.map(alert => ({
+        ...alert,
+        patientName: `${alert.firstname || ''} ${alert.surname || ''}`.trim() // Combine here
+      }));
     } catch (error) {
-      console.warn(
-        "High priority alerts failed, using fallback:",
-        error.message
-      );
-
-      // Generate mock alerts based on existing patients
-      try {
-        const patientsResponse = await apiClient.get(
-          "/patients?include=questionnaires&limit=10"
-        );
-        const patients = patientsResponse.data.patients || [];
-
-        const alerts = [];
-        patients.forEach((patient) => {
-          if (patient.allergies?.length > 0) {
-            alerts.push({
-              id: `alert-${patient.patientId}-allergy`,
-              patientId: patient.patientId,
-              patientName: patient.fullName,
-              message: `ALERGII: ${patient.allergies.join(", ")}`,
-              type: "warning",
-              priority: "medium",
-              category: "allergy",
-              date: new Date().toISOString(),
-            });
-          }
-
-          if (patient.heartIssues) {
-            alerts.push({
-              id: `alert-${patient.patientId}-heart`,
-              patientId: patient.patientId,
-              patientName: patient.fullName,
-              message: "BOLI CARDIACE - Consultați cardiologul",
-              type: "danger",
-              priority: "high",
-              category: "medical_condition",
-              date: new Date().toISOString(),
-            });
-          }
-        });
-
-        return alerts;
-      } catch (fallbackError) {
-        return [];
-      }
+      console.warn("High priority alerts failed:", error.message);
+      return [];
     }
   }
 
@@ -424,37 +403,20 @@ class ApiService {
   static async getHighRiskPatients() {
     try {
       const response = await apiClient.get("/questionnaires/high-risk");
-      return response.data;
+
+      return response.data.map(patient => ({
+        patientId: patient.patientId,
+        patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(), // Combine here
+        email: patient.email,
+        telefon: patient.telefon,
+        riskLevel: patient.riskLevel,
+        heartIssues: patient.heartIssues,
+        allergies: patient.allergies || [],
+        medicalConditions: patient.medicalConditions || []
+      }));
     } catch (error) {
-      console.warn("High risk patients failed, using fallback:", error.message);
-
-      // Generate mock data based on existing patients
-      try {
-        const patientsResponse = await apiClient.get(
-          "/patients?include=questionnaires&limit=20"
-        );
-        const patients = patientsResponse.data.patients || [];
-
-        return patients
-          .filter(
-            (patient) =>
-              patient.riskLevel === "high" ||
-              patient.riskLevel === "medium" ||
-              patient.allergies?.length > 0 ||
-              patient.heartIssues ||
-              patient.medicalConditions?.length > 0
-          )
-          .map((patient) => ({
-            patientId: patient.patientId,
-            patientName: patient.fullName,
-            riskLevel: patient.riskLevel || "medium",
-            riskDescription: this.generateRiskDescription(patient),
-            submissionDate: patient.lastQuestionnaireDate || patient.created_at,
-            priority: patient.heartIssues ? "high" : "medium",
-          }));
-      } catch (fallbackError) {
-        return [];
-      }
+      console.warn("High risk patients failed:", error.message);
+      return [];
     }
   }
 
@@ -479,10 +441,33 @@ class ApiService {
 
   // Get all patients with their medical data and questionnaires
   static async getAllPatients(page = 1, limit = 10) {
-    const response = await apiClient.get(
-      `/patients?page=${page}&limit=${limit}&include=questionnaires`
-    );
-    return response.data;
+    try {
+      const response = await apiClient.get(`/patients?page=${page}&limit=${limit}&include=questionnaires`);
+
+      // Transform the data
+      const transformedData = {
+        ...response.data,
+        patients: response.data.patients.map(patient => ({
+          ...patient,
+          fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+          patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+          doctor: patient.doctor ? {
+            ...patient.doctor,
+            fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim()
+          } : null
+        }))
+      };
+
+      return transformedData;
+    } catch (error) {
+      console.error("Error fetching all patients:", error);
+      return {
+        patients: [],
+        totalPages: 1,
+        currentPage: 1,
+        totalItems: 0,
+      };
+    }
   }
 
   // Get patients with medical conditions and risk alerts
@@ -503,13 +488,13 @@ class ApiService {
   static async searchPatients(searchTerm) {
     try {
       const response = await apiClient.get(
-        `/patients/search?q=${encodeURIComponent(searchTerm)}&include=medical`
+          `/patients/search?q=${encodeURIComponent(searchTerm)}&include=medical`
       );
       return response.data;
     } catch (error) {
       // Fallback to basic search
       const response = await apiClient.get(
-        `/patients/search?q=${encodeURIComponent(searchTerm)}`
+          `/patients/search?q=${encodeURIComponent(searchTerm)}`
       );
       return response.data;
     }
@@ -522,31 +507,37 @@ class ApiService {
     try {
       console.log("getPatientProfile called with patientId:", patientId);
 
-      // Get patient basic info with questionnaires included
+      // Get patient basic info
       const patientResponse = await apiClient.get(`/patients/${patientId}`);
       console.log("Patient response:", patientResponse.data);
+
+      // Transform patient data
+      const patient = patientResponse.data;
+      const transformedPatient = {
+        ...patient,
+        fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        doctor: patient.doctor ? {
+          ...patient.doctor,
+          fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim()
+        } : null
+      };
 
       // Try to get alerts
       let alerts = [];
       try {
-        const alertsResponse = await apiClient.get(
-          `/patients/${patientId}/alerts`
-        );
+        const alertsResponse = await apiClient.get(`/patients/${patientId}/alerts`);
         alerts = alertsResponse.data;
-      } catch (aError) {
-        console.warn("Could not fetch alerts for patient:", aError.message);
+      } catch (alertError) {
+        console.warn("Could not fetch patient alerts:", alertError.message);
       }
 
-      const result = {
-        patient: patientResponse.data,
-        questionnaires: patientResponse.data.questionnaires || [],
-        alerts: alerts,
+      return {
+        patient: transformedPatient,
+        alerts: alerts
       };
-
-      console.log("getPatientProfile returning:", result);
-      return result;
     } catch (error) {
-      console.error("Error fetching patient profile:", error);
+      console.error("Error in getPatientProfile:", error);
       throw error;
     }
   }
@@ -559,17 +550,25 @@ class ApiService {
       const response = await apiClient.post("/reports/generate", {
         type: reportType,
         filters,
-        includeRealData: true,
       });
+
+      // Transform report data to combine firstname + surname
+      if (response.data.data && Array.isArray(response.data.data)) {
+        const transformedData = {
+          ...response.data,
+          data: response.data.data.map(item => ({
+            ...item,
+            patientName: `${item.firstname || ''} ${item.surname || ''}`.trim(),
+            fullName: `${item.firstname || ''} ${item.surname || ''}`.trim()
+          }))
+        };
+        return transformedData;
+      }
+
       return response.data;
     } catch (error) {
-      console.warn(
-        "Report generation failed, using fallback data:",
-        error.message
-      );
-
-      // Generate mock report data
-      return this.generateMockReport(reportType);
+      console.error("Error generating report:", error);
+      throw error;
     }
   }
 
@@ -650,54 +649,44 @@ class ApiService {
         params: { page, limit, ...filters },
       });
 
-      return response.data;
-    } catch (error) {
-      console.warn(
-        "Formatted patient list failed, using basic patient data:",
-        error.message
-      );
+      console.log('Raw patient data from API:', response.data); // Debug
 
-      // Fallback to basic patient endpoint
-      try {
-        const response = await apiClient.get("/patients", {
-          params: { page, limit, ...filters },
-        });
-
-        // Transform the data to match the doctor interface expectations
-        const patients = response.data.patients || [];
-        return {
-          patients: patients.map((patient) => ({
-            patientId: patient.patientId || patient.id,
-            fullName:
-              patient.fullName || `${patient.firstName} ${patient.lastName}`,
-            email: patient.email,
+      // Transform the data to combine firstname + surname into fullName
+      const transformedData = {
+        ...response.data,
+        patients: response.data.patients.map(patient => {
+          const transformed = {
+            ...patient,
+            fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+            patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+            // Ensure phone field is available as both 'phone' and original field name
             phone: patient.phone || patient.telefon,
-            allergies: patient.allergies || [],
-            medicalConditions: patient.medicalConditions || [],
-            heartIssues: patient.heartIssues || false,
-            anestheticReactions: patient.anestheticReactions || false,
-            lastQuestionnaireDate:
-              patient.lastQuestionnaireDate || patient.created_at,
-            riskLevel: patient.riskLevel || "minimal",
-          })),
-          totalPages: response.data.totalPages || 1,
-          currentPage: response.data.currentPage || 1,
-          totalItems: response.data.totalItems || 0,
-        };
-      } catch (fallbackError) {
-        console.error(
-          "Even fallback patient list failed:",
-          fallbackError.message
-        );
-        return {
-          patients: [],
-          totalPages: 1,
-          currentPage: 1,
-          totalItems: 0,
-        };
-      }
+            telefon: patient.telefon,
+            doctor: patient.doctor ? {
+              ...patient.doctor,
+              fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim(),
+              firstName: patient.doctor.firstname,
+              lastName: patient.doctor.surname
+            } : null
+          };
+
+          console.log('Transformed patient:', transformed); // Debug
+          return transformed;
+        })
+      };
+
+      return transformedData;
+    } catch (error) {
+      console.warn("Formatted patient list failed:", error.message);
+      return {
+        patients: [],
+        totalPages: 1,
+        currentPage: 1,
+        totalItems: 0,
+      };
     }
   }
+
 
   // **REAL-TIME DASHBOARD DATA WITH FALLBACKS**
 
@@ -705,31 +694,31 @@ class ApiService {
   static async getRealDashboardStats() {
     try {
       const [statsResponse, alertsResponse, recentResponse] =
-        await Promise.allSettled([
-          this.getDashboardStats(),
-          this.getHighPriorityAlerts(),
-          this.getRecentQuestionnaires(5),
-        ]);
+          await Promise.allSettled([
+            this.getDashboardStats(),
+            this.getHighPriorityAlerts(),
+            this.getRecentQuestionnaires(5),
+          ]);
 
       return {
         statistics:
-          statsResponse.status === "fulfilled"
-            ? statsResponse.value
-            : {
-                totalPatients: 0,
-                pendingQuestionnaires: 0,
-                riskPatients: 0,
-                todayAppointments: 0,
-                questionnaireStats: {
-                  total: 0,
-                  recentWeek: 0,
-                  riskDistribution: {},
+            statsResponse.status === "fulfilled"
+                ? statsResponse.value
+                : {
+                  totalPatients: 0,
+                  pendingQuestionnaires: 0,
+                  riskPatients: 0,
+                  todayAppointments: 0,
+                  questionnaireStats: {
+                    total: 0,
+                    recentWeek: 0,
+                    riskDistribution: {},
+                  },
                 },
-              },
         highPriorityAlerts:
-          alertsResponse.status === "fulfilled" ? alertsResponse.value : [],
+            alertsResponse.status === "fulfilled" ? alertsResponse.value : [],
         recentQuestionnaires:
-          recentResponse.status === "fulfilled" ? recentResponse.value : [],
+            recentResponse.status === "fulfilled" ? recentResponse.value : [],
       };
     } catch (error) {
       console.error("Error fetching real dashboard stats:", error);
@@ -758,8 +747,8 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.warn(
-        "Consent save failed, data may not be stored:",
-        error.message
+          "Consent save failed, data may not be stored:",
+          error.message
       );
       // Return a mock success response
       return {
