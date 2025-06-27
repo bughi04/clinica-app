@@ -76,7 +76,7 @@ const TabletInterface = ({ children }) => {
             {orientation === 'landscape' && <OrientationWarning />}
             {!isOnline && <OfflineWarning />}
 
-            <div className="tablet-content">
+            <div className="tablet-content bg-gradient-to-br from-[rgb(59,185,194)]/10 via-[rgb(59,185,194)]/5 to-gray-50">
                 {children}
             </div>
         </div>

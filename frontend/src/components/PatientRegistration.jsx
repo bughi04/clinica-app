@@ -152,7 +152,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
 
     if (showSuccess) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="min-h-screen flex items-center justify-center p-6 ">
                 <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md text-center animate-scale-in">
                     <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 animate-glow">
                         <CheckCircle className="w-10 h-10 text-white" />
@@ -174,7 +174,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
     }
 
     return (
-        <div className="min-h-screen p-6 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+        <div className="min-h-screen p-6 relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gray-400 rounded-full blur-3xl animate-float"></div>
@@ -184,8 +184,8 @@ const PatientRegistration = ({ onComplete, onBack }) => {
             <div className="max-w-4xl mx-auto relative z-10">
                 <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden animate-slide-in-up">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-gray-700 to-gray-800 p-8 text-white relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-gray-700/50 to-gray-800/50 animate-morph"></div>
+                    <div className="bg-gradient-to-r from-[rgb(59,185,194)] to-[rgb(49,175,184)] p-8 text-white relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-[rgb(59,185,194)]/60 to-[rgb(49,175,184)]/60"></div>
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-6">
                                 <button
@@ -212,8 +212,8 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                                         return (
                                             <div key={index} className="flex items-center">
                                                 <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 ${
-                                                    isCompleted ? 'bg-green-500 scale-110' :
-                                                        isActive ? 'bg-white text-gray-700 scale-110' :
+                                                    isCompleted ? 'bg-[rgb(59,185,194)] scale-110' :
+                                                        isActive ? 'bg-white text-[rgb(59,185,194)] scale-110' :
                                                             'bg-white/20 text-white/60'
                                                 }`}>
                                                     {isCompleted ? (
@@ -227,7 +227,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                                                 </div>
                                                 {index < steps.length - 1 && (
                                                     <div className={`w-16 h-1 mx-2 rounded-full transition-all duration-500 ${
-                                                        index < step ? 'bg-green-400' : 'bg-white/30'
+                                                        index < step ? 'bg-[rgb(59,185,194)]' : 'bg-white/30'
                                                     }`} />
                                                 )}
                                             </div>
@@ -268,7 +268,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                                 type="button"
                                 onClick={prevStep}
                                 disabled={step === 0}
-                                className="group flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 disabled:hover:scale-100"
+                                className="group flex items-center gap-2 px-6 py-3 bg-[rgb(59,185,194)]/10 text-[rgb(49,175,184)] rounded-xl hover:bg-[rgb(59,185,194)]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 disabled:hover:scale-100"
                             >
                                 <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
                                 Înapoi
@@ -278,7 +278,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                                 <button
                                     type="button"
                                     onClick={nextStep}
-                                    className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+                                    className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[rgb(59,185,194)] to-[rgb(49,175,184)] text-white rounded-xl hover:from-[rgb(49,175,184)] hover:to-[rgb(39,165,174)] transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
                                 >
                                     Următorul
                                     <ArrowLeft className="w-4 h-4 rotate-180 transition-transform duration-300 group-hover:translate-x-1" />
@@ -288,7 +288,7 @@ const PatientRegistration = ({ onComplete, onBack }) => {
                                     type="button"
                                     onClick={handleSubmit(onSubmit)}
                                     disabled={loading}
-                                    className="group flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 transition-all duration-300 hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl"
+                                    className="group flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[rgb(59,185,194)] to-[rgb(49,175,184)] text-white rounded-xl hover:from-[rgb(49,175,184)] hover:to-[rgb(39,165,174)] disabled:opacity-50 transition-all duration-300 hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl"
                                 >
                                     {loading ? (
                                         <>
@@ -315,12 +315,12 @@ const PatientRegistration = ({ onComplete, onBack }) => {
 const PersonalInfoStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-xl flex items-center justify-center">
                 <User className="w-6 h-6 text-white" />
             </div>
             <div>
-                <h2 className="text-xl font-semibold text-gray-800">Informații Personale</h2>
-                <p className="text-gray-600">Completați datele dumneavoastră de identificare</p>
+                <h2 className="text-xl font-semibold text-gray-800 mb-0">Informații Personale</h2>
+                <p className="text-gray-600 mb-0">Completați datele dumneavoastră de identificare</p>
             </div>
         </div>
 
@@ -490,12 +490,12 @@ const PersonalInfoStep = ({ control, errors }) => (
 const ContactInfoStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-gray-500 to-gray-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-xl flex items-center justify-center">
                 <Phone className="w-6 h-6 text-white" />
             </div>
             <div>
-                <h2 className="text-xl font-semibold text-gray-800">Date de Contact</h2>
-                <p className="text-gray-600">Informații pentru comunicarea cu clinica</p>
+                <h2 className="text-xl font-semibold text-gray-800 mb-0">Date de Contact</h2>
+                <p className="text-gray-600 mb-0">Informații pentru comunicarea cu clinica</p>
             </div>
         </div>
 
@@ -573,7 +573,7 @@ const ContactInfoStep = ({ control, errors }) => (
 
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
             <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-full flex items-center justify-center flex-shrink-0">
                     <CheckCircle className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -591,12 +591,12 @@ const ContactInfoStep = ({ control, errors }) => (
 const AddressStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-xl flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
             </div>
             <div>
-                <h2 className="text-xl font-semibold text-gray-800">Adresa de Domiciliu</h2>
-                <p className="text-gray-600">Adresa completă pentru evidența medicală</p>
+                <h2 className="text-xl font-semibold text-gray-800 mb-0">Adresa de Domiciliu</h2>
+                <p className="text-gray-600 mb-0">Adresa completă pentru evidența medicală</p>
             </div>
         </div>
 
@@ -786,12 +786,12 @@ const AddressStep = ({ control, errors }) => (
 const AdditionalInfoStep = ({ control, errors }) => (
     <div className="space-y-6">
         <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-xl flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-white" />
             </div>
             <div>
-                <h2 className="text-xl font-semibold text-gray-800">Informații Suplimentare</h2>
-                <p className="text-gray-600">Detalii opționale pentru finalizarea înregistrării</p>
+                <h2 className="text-xl font-semibold text-gray-800 mb-0">Informații Suplimentare</h2>
+                <p className="text-gray-600 mb-0">Detalii opționale pentru finalizarea înregistrării</p>
             </div>
         </div>
 
@@ -841,7 +841,7 @@ const AdditionalInfoStep = ({ control, errors }) => (
 
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
             <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-gradient-to-br from-[rgb(59,185,194)] to-[rgb(49,175,184)] rounded-full flex items-center justify-center flex-shrink-0">
                     <CheckCircle className="w-4 h-4 text-white" />
                 </div>
                 <div>

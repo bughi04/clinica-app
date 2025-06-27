@@ -59,14 +59,14 @@ app.get("/api", (req, res) => {
 async function connectDB() {
   try {
     await sequelize.authenticate();
-    console.log("✅ Database connection established successfully.");
-    console.log("📊 Connected to PostgreSQL database: postgres");
+    console.log("Database connection established successfully.");
+    console.log("Connected to PostgreSQL database: postgres");
 
     // Sync models (be careful in production)
     await sequelize.sync({ alter: false }); // Don't alter tables in production
-    console.log("✅ Database models synchronized.");
+    console.log("Database models synchronized.");
   } catch (error) {
-    console.error("❌ Unable to connect to the database:", error);
+    console.error("Unable to connect to the database:", error);
     process.exit(1);
   }
 }
@@ -492,6 +492,80 @@ app.post("/api/questionnaires", async (req, res) => {
       );
     }
 
+    // --- Sync to legacy tables ---
+    // Parse JSON fields if needed
+    const examenDentar =
+      typeof questionnaire.examen_dentar === "string"
+        ? JSON.parse(questionnaire.examen_dentar)
+        : questionnaire.examen_dentar || {};
+    const conditiiMed =
+      typeof questionnaire.conditii_medicale === "string"
+        ? JSON.parse(questionnaire.conditii_medicale)
+        : questionnaire.conditii_medicale || {};
+    const stareGen =
+      typeof questionnaire.stare_generala === "string"
+        ? JSON.parse(questionnaire.stare_generala)
+        : questionnaire.stare_generala || {};
+    const conditiiFemei =
+      typeof questionnaire.conditii_femei === "string"
+        ? JSON.parse(questionnaire.conditii_femei)
+        : questionnaire.conditii_femei || {};
+
+    // 1. datestomatologice
+    await models.DentalRecord.create({
+      pacientid: questionnaire.pacientid,
+      sanatategingii: examenDentar.sangereaza_gingiile || "NU",
+      sensibilitateDinti: examenDentar.sensibilitate_dinti || "NU",
+      problemeTratamentOrtodontic: examenDentar.probleme_ortodontice || "NU",
+      scrasnit_inclestat_scrasnit_dinti:
+        examenDentar.scrasnit_inclestat || "NU",
+      ultim_consult_stomatologic: examenDentar.data_ultim_consult || "NU",
+      nota_aspect_dentatie: examenDentar.aspect_dentatie || "NU",
+      probleme_tratament_stomatologic_anterior:
+        examenDentar.probleme_tratament_anterior || "NU",
+      data: questionnaire.data_completare,
+    });
+
+    // 2. boala
+    await models.Boala.create({
+      pacientid: questionnaire.pacientid,
+      boli_inima: conditiiMed.boli_inima_hipertensiune === "DA",
+      purtator_proteza: conditiiMed.purtator_proteza_valvulara === "DA",
+      diabet: conditiiMed.diabet === "DA",
+      hepatita: conditiiMed.hepatita_abc_ciroza === "DA",
+      reumatism: conditiiMed.reumatism_artrita === "DA",
+      boli_respiratorii: conditiiMed.boli_respiratorii_astm === "DA",
+      tulburari_coagulare_sange:
+        conditiiMed.tulburari_coagulare_sangerari === "DA",
+      anemie: conditiiMed.anemie_transfuzie === "DA",
+      boli_rinichi: conditiiMed.boli_rinichi_litiaza === "DA",
+      glaucom: conditiiMed.glaucom === "DA",
+      epilepsie: conditiiMed.epilepsie === "DA",
+      migrene: conditiiMed.migrene === "DA",
+      osteoporoza: conditiiMed.osteoporoza === "DA",
+      ulcer_gastric: conditiiMed.ulcer_gastric === "DA",
+      boli_tiroida: conditiiMed.boli_tiroida === "DA",
+      boli_neurologice: conditiiMed.boli_neurologice === "DA",
+      probleme_psihice: conditiiMed.probleme_psihice === "DA",
+      alte_boli: conditiiMed.alte_boli_detalii,
+    });
+
+    // 3. antecedente_medicale
+    await models.AntecedenteMedicale.create({
+      pacientid: questionnaire.pacientid,
+      nota_stare_sanatate: stareGen.apreciere_sanatate,
+      ingrijire_alt_medic: stareGen.in_ingrijirea_medic,
+      spitalizare: stareGen.spitalizare_5ani,
+      medicamente: stareGen.lista_medicamente,
+      fumat: stareGen.fumat,
+      alergii: stareGen.lista_alergii,
+      antidepresive: stareGen.antidepresive,
+      femeie_insarcinata_luna: conditiiFemei.luna_sarcina,
+      femeie_bebe_alaptare: conditiiFemei.alaptare,
+      data: questionnaire.data_completare,
+    });
+    // --- End sync ---
+
     res.status(201).json({
       id: questionnaire.questionnaireid,
       patientId: questionnaire.pacientid,
@@ -567,118 +641,81 @@ app.get("/api/questionnaires/patient/:patientId/latest", async (req, res) => {
   }
 });
 
-// Get questionnaire by ID - FIXED
-app.get("/api/questionnaires/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
 
-    // Validate that id is a number
-    if (isNaN(parseInt(id))) {
-      return res.status(400).json({ error: "Invalid questionnaire ID" });
-    }
 
-    if (!models.Questionnaire) {
-      return res.status(404).json({ message: "Questionnaire not found" });
-    }
-
-    const questionnaire = await models.Questionnaire.findByPk(id, {
-      include: [
-        {
-          model: models.Patient,
-          as: "patient",
-          attributes: ["pacientid", "firstname", "surname", "email"],
-        },
-      ],
-    });
-
-    if (!questionnaire) {
-      return res.status(404).json({ message: "Questionnaire not found" });
-    }
-
-    res.json(questionnaire);
-  } catch (error) {
-    console.error("Error fetching questionnaire:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Get high-risk patients - FIXED ROUTE
+// Refactored high-risk patients endpoint
 app.get("/api/questionnaires/high-risk", async (req, res) => {
+  console.log(
+    "[DEBUG] /api/questionnaires/high-risk called",
+    req.method,
+    req.url,
+    req.query,
+    req.params
+  );
   try {
-    if (!models.Questionnaire) {
-      return res.json([]);
+    // Get all patients
+    const patients = await models.Patient.findAll();
+    // For each patient, calculate risk
+    const highRiskPatients = [];
+    for (const patient of patients) {
+      const riskLevel = await calculateRiskFromLegacyTables(
+        patient.pacientid,
+        models
+      );
+      if (riskLevel === "high" || riskLevel === "medium") {
+        highRiskPatients.push({
+          patientId: patient.pacientid.toString(),
+          patientName: `${patient.firstname} ${patient.surname}`,
+          riskLevel,
+          // Optionally add more fields as needed
+        });
+      }
     }
-
-    const highRiskPatients = await models.Questionnaire.findAll({
-      where: {
-        risk_level: ["high", "medium"],
-        status: "completed",
-      },
-      include: [
-        {
-          model: models.Patient,
-          as: "patient",
-          attributes: ["pacientid", "firstname", "surname"],
-        },
-      ],
-      order: [["data_completare", "DESC"]],
-      limit: 20,
-    });
-
-    const formattedPatients = highRiskPatients.map((q) => ({
-      patientId: q.patient.pacientid.toString(),
-      patientName: `${q.patient.firstname} ${q.patient.surname}`,
-      riskLevel: q.risk_level,
-      riskDescription:
-        q.medical_alerts?.map((alert) => alert.message).join("; ") ||
-        "Risc înalt/mediu",
-      submissionDate: q.data_completare,
-      priority: q.medical_alerts?.some((alert) => alert.priority === "high")
-        ? "high"
-        : "medium",
-    }));
-
-    res.json(formattedPatients);
+    res.json(highRiskPatients);
   } catch (error) {
-    console.error("Error fetching high-risk patients:", error);
+    console.error("Error fetching high-risk patients (legacy):", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// Get recent questionnaires - FIXED ROUTE
+// Refactored recent questionnaires endpoint
 app.get("/api/questionnaires/recent", async (req, res) => {
+  console.log(
+    "[DEBUG] /api/questionnaires/recent called",
+    req.method,
+    req.url,
+    req.query,
+    req.params
+  );
   try {
     const limit = parseInt(req.query.limit) || 10;
-
-    if (!models.Questionnaire) {
-      return res.json([]);
-    }
-
+    // Get recent questionnaires (for date and patient reference)
     const recent = await models.Questionnaire.findAll({
       where: { status: "completed" },
-      include: [
-        {
-          model: models.Patient,
-          as: "patient",
-          attributes: ["pacientid", "firstname", "surname"],
-        },
-      ],
       order: [["data_completare", "DESC"]],
       limit,
     });
-
-    const formattedQuestionnaires = recent.map((q) => ({
-      id: q.questionnaireid,
-      patientId: q.patient.pacientid.toString(),
-      patientName: `${q.patient.firstname} ${q.patient.surname}`,
-      submissionDate: q.data_completare,
-      riskLevel: q.risk_level,
-      status: q.status,
-    }));
-
+    // For each, calculate risk from legacy tables
+    const formattedQuestionnaires = await Promise.all(
+      recent.map(async (q) => {
+        const patient = await models.Patient.findByPk(q.pacientid);
+        const riskLevel = await calculateRiskFromLegacyTables(
+          q.pacientid,
+          models
+        );
+        return {
+          id: q.questionnaireid,
+          patientId: q.pacientid.toString(),
+          patientName: patient ? `${patient.firstname} ${patient.surname}` : "",
+          submissionDate: q.data_completare,
+          riskLevel,
+          status: q.status,
+        };
+      })
+    );
     res.json(formattedQuestionnaires);
   } catch (error) {
-    console.error("Error fetching recent questionnaires:", error);
+    console.error("Error fetching recent questionnaires (legacy):", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -728,6 +765,45 @@ app.get("/api/questionnaires/statistics", async (req, res) => {
     res.json(stats);
   } catch (error) {
     console.error("Error fetching questionnaire statistics:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Get questionnaire by ID - FIXED
+app.get("/api/questionnaires/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid questionnaire ID" });
+    }
+    console.log("Received ID:", req.params.id);
+
+    // // Validate that id is a number
+    // if (isNaN(parseInt(id))) {
+    //   return res.status(400).json({ error: "Invalid questionnaire ID" });
+    // }
+
+    if (!models.Questionnaire) {
+      return res.status(404).json({ message: "Questionnaire not found" });
+    }
+
+    const questionnaire = await models.Questionnaire.findByPk(id, {
+      include: [
+        {
+          model: models.Patient,
+          as: "patient",
+          attributes: ["pacientid", "firstname", "surname", "email"],
+        },
+      ],
+    });
+
+    if (!questionnaire) {
+      return res.status(404).json({ message: "Questionnaire not found" });
+    }
+
+    res.json(questionnaire);
+  } catch (error) {
+    console.error("Error fetching questionnaire:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -1217,6 +1293,60 @@ app.get("/api/dentists", async (req, res) => {
   }
 });
 
+// Utility: Calculate risk from legacy tables
+async function calculateRiskFromLegacyTables(pacientid, models) {
+  // Fetch latest records from each table
+  const boala = await models.Boala.findOne({
+    where: { pacientid },
+    order: [["idboala", "DESC"]],
+  });
+  const antecedente = await models.AntecedenteMedicale.findOne({
+    where: { pacientid },
+    order: [["data", "DESC"]],
+  });
+  // datestomatologice not used for risk in your logic, but can be fetched if needed
+
+  // Helper to convert boolean to 'DA'/'NU'
+  const toDA = (val) => (val === true ? "DA" : val === false ? "NU" : val);
+
+  // Extract fields (default to 'NU' if missing)
+  const boli_inima_hipertensiune = toDA(boala?.boli_inima);
+  const tulburari_coagulare_sangerari = toDA(boala?.tulburari_coagulare_sange);
+  const epilepsie = toDA(boala?.epilepsie);
+  const diabet = toDA(boala?.diabet);
+  const hepatita_ciroza = toDA(boala?.hepatita);
+  const migrene = toDA(boala?.migrene);
+  const fumat = toDA(antecedente?.fumat);
+  const alergii = toDA(antecedente?.alergii);
+  // insarcinata: check antecedente.femeie_insarcinata_luna (if present and not empty)
+  let insarcinata = "NU";
+  if (
+    antecedente?.femeie_insarcinata_luna &&
+    antecedente.femeie_insarcinata_luna !== "" &&
+    antecedente.femeie_insarcinata_luna !== null
+  ) {
+    insarcinata = "DA";
+  }
+
+  // Calculate risk score
+  let riskScore = 0;
+  if (boli_inima_hipertensiune === "DA") riskScore += 3;
+  if (tulburari_coagulare_sangerari === "DA") riskScore += 3;
+  if (epilepsie === "DA") riskScore += 3;
+  if (diabet === "DA") riskScore += 2;
+  if (hepatita_ciroza === "DA") riskScore += 2;
+  if (alergii === "DA") riskScore += 2;
+  if (migrene === "DA") riskScore += 1;
+  if (fumat === "DA") riskScore += 1;
+  if (insarcinata === "DA") riskScore += 1;
+
+  // Map to risk level
+  if (riskScore >= 6) return "high";
+  if (riskScore >= 4) return "medium";
+  if (riskScore >= 2) return "low";
+  return "minimal";
+}
+
 // Reports Generator Endpoint
 app.post("/api/reports/generate", async (req, res) => {
   try {
@@ -1235,17 +1365,25 @@ app.post("/api/reports/generate", async (req, res) => {
         ],
       });
 
-      const data = patients.map((patient) => {
-        const q = patient.questionnaires?.[0];
-        return {
-          patientName: `${patient.firstname} ${patient.surname}`,
-          email: patient.email,
-          submissionDate: q?.data_completare,
-          riskLevel: q?.risk_level || "minimal",
-          consentGiven: q?.acord_general?.agreed || false,
-          completed: q?.status === "completed",
-        };
-      });
+      // For each patient, calculate risk from legacy tables
+      const data = await Promise.all(
+        patients.map(async (patient) => {
+          const q = patient.questionnaires?.[0];
+          const riskLevel = await calculateRiskFromLegacyTables(
+            patient.pacientid,
+            models
+          );
+          return {
+            patientName: `${patient.firstname} ${patient.surname}`,
+            email: patient.email,
+            submissionDate: q?.data_completare,
+            riskLevel: riskLevel,
+            consentGiven: q?.acord_general?.agreed || false,
+            completed:
+              q?.status === "completed" && q?.acord_general?.agreed === true,
+          };
+        })
+      );
 
       const statistics = {
         totalRecords: data.length,

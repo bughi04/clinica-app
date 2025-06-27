@@ -372,7 +372,7 @@ const App = () => {
     // Enhanced Patient Interface with Teal Theme
     const renderPatientInterface = () => (
         <TabletInterface>
-            <div className="min-h-screen bg-gradient-to-br from-[rgb(59,185,194)]/10 via-[rgb(59,185,194)]/5 to-gray-50 relative overflow-hidden">
+            <div className="min-h-screen relative overflow-hidden">
                 {/* Animated Background Pattern */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-[rgb(59,185,194)]/30 to-transparent rounded-full blur-3xl animate-float"></div>
