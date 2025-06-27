@@ -121,40 +121,27 @@ class PatientProfile extends Component {
         if (!patient) return null;
 
         console.log('Rendering basic info - patient:', patient);
-        console.log('Patient phone fields:', {
-            phone: patient.phone,
-            telefon: patient.telefon,
-            telephone: patient.telephone
-        }); // Debug phone fields
+        console.log('Rendering basic info - questionnaire:', questionnaire);
+        console.log('Rendering basic info - questionnaire.data_completare:', questionnaire?.data_completare);
 
         // Try to get the registration date from different possible sources
         const registrationDate = patient.created_at || patient.createdAt || null;
+        console.log('Registration date:', registrationDate);
 
         // Try to get the last completion date
         const lastCompletionDate = questionnaire?.data_completare || null;
-
-        // Create fullName if it doesn't exist
-        const displayName = patient.fullName ||
-            `${patient.firstname || patient.firstName || ''} ${patient.surname || patient.lastName || ''}`.trim();
-
-        // Get phone number from multiple possible fields
-        const displayPhone = patient.phone || patient.telefon || patient.telephone || 'N/A';
-
-        // Get email
-        const displayEmail = patient.email || 'N/A';
+        console.log('Last completion date:', lastCompletionDate);
 
         return (
             <Descriptions title="Informații Personale" bordered>
-                <Descriptions.Item label="Nume Complet">{displayName}</Descriptions.Item>
+                <Descriptions.Item label="Nume Complet">{patient.fullName}</Descriptions.Item>
                 <Descriptions.Item label="Data Nașterii">
-                    {patient.birthDate ? new Date(patient.birthDate).toLocaleDateString('ro-RO') : 'N/A'}
+                    {new Date(patient.birthDate).toLocaleDateString('ro-RO')}
                 </Descriptions.Item>
-                <Descriptions.Item label="Email">{displayEmail}</Descriptions.Item>
-                <Descriptions.Item label="Telefon">{displayPhone}</Descriptions.Item>
+                <Descriptions.Item label="Email">{patient.email}</Descriptions.Item>
+                <Descriptions.Item label="Telefon">{patient.phone}</Descriptions.Item>
                 <Descriptions.Item label="Doctor">
-                    {patient.doctor ?
-                        (patient.doctor.fullName || `${patient.doctor.firstName || patient.doctor.firstname || ''} ${patient.doctor.lastName || patient.doctor.surname || ''}`.trim() || 'Nespecificat')
-                        : 'Nespecificat'}
+                    {patient.doctor ? `${patient.doctor.firstName} ${patient.doctor.lastName}` : 'Nespecificat'}
                 </Descriptions.Item>
                 <Descriptions.Item label="Înregistrat la">
                     {registrationDate ? new Date(registrationDate).toLocaleDateString('ro-RO') : 'N/A'}
@@ -185,8 +172,8 @@ class PatientProfile extends Component {
                 <Card title="Condiții Medicale" style={{ marginBottom: 16 }}>
                     {filteredConditions.length > 0 ? (
                         <ul>
-                            {filteredConditions.map(([key, value]) => (
-                                <li key={key}>{key.replace(/_/g, ' ')}: {value}</li>
+                    {filteredConditions.map(([key, value]) => (
+                        <li key={key}>{key.replace(/_/g, ' ')}: {value}</li>
                             ))}
                         </ul>
                     ) : (

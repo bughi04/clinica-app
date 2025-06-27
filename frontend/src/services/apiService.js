@@ -115,20 +115,28 @@ class ApiService {
   static async getPatientById(patientId) {
     try {
       const response = await apiClient.get(`/patients/${patientId}`);
+
       console.log('Raw patient by ID from API:', response.data); // Debug
 
-      // ✅ Add necessary field mappings WITHOUT concatenating encrypted data
+      // Transform the response to combine firstname + surname and fix phone
       const patient = response.data;
       const transformed = {
         ...patient,
-        // ✅ Only add phone mapping, no concatenation of names
+        fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        // Ensure phone field is available
         phone: patient.phone || patient.telefon,
-        // ✅ Keep doctor data as-is (components will handle concatenation after decryption)
+        telefon: patient.telefon,
+        doctor: patient.doctor ? {
+          ...patient.doctor,
+          fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim(),
+          firstName: patient.doctor.firstname,
+          lastName: patient.doctor.surname
+        } : null
       };
 
       console.log('Transformed patient by ID:', transformed); // Debug
       return transformed;
-
     } catch (error) {
       console.error("Error fetching patient by ID:", error);
       throw error;
@@ -140,12 +148,18 @@ class ApiService {
     try {
       const response = await apiClient.get(`/questionnaires/patient/${patientId}`);
 
-      // ✅ Return data AS-IS, let the component handle any transformations AFTER decryption
-      return response.data;
-
+      // Transform questionnaire data to handle nested patient info
+      return response.data.map(questionnaire => ({
+        ...questionnaire,
+        patient: questionnaire.patient ? {
+          ...questionnaire.patient,
+          fullName: `${questionnaire.patient.firstname || ''} ${questionnaire.patient.surname || ''}`.trim(),
+          patientName: `${questionnaire.patient.firstname || ''} ${questionnaire.patient.surname || ''}`.trim()
+        } : null
+      }));
     } catch (error) {
-      console.error("Error fetching patient questionnaires:", error);
-      throw error;
+      console.warn("No existing questionnaires found for patient:", patientId);
+      return [];
     }
   }
 
@@ -357,7 +371,7 @@ class ApiService {
       // Now the API returns separate firstname, surname fields instead of patientName
       return response.data.map(item => ({
         ...item,
-        patientName: `${item.firstname || ''} ${item.surname || ''}`.trim(), // Combine AFTER backend decryption
+        patientName: `${item.firstname || ''} ${item.surname || ''}`.trim(), // Combine here
         patientId: item.patientId,
         submissionDate: item.submissionDate,
         riskLevel: item.riskLevel,
@@ -377,52 +391,11 @@ class ApiService {
       // Now the API returns separate firstname, surname fields
       return response.data.map(alert => ({
         ...alert,
-        patientName: `${alert.firstname || ''} ${alert.surname || ''}`.trim() // Combine AFTER backend decryption
+        patientName: `${alert.firstname || ''} ${alert.surname || ''}`.trim() // Combine here
       }));
     } catch (error) {
       console.warn("High priority alerts failed:", error.message);
-
-      // Generate mock alerts based on existing patients
-      try {
-        const patientsResponse = await apiClient.get("/patients?include=questionnaires&limit=10");
-        const patients = patientsResponse.data.patients || [];
-
-        const alerts = [];
-        patients.forEach((patient) => {
-          // Combine names AFTER receiving decrypted data
-          const patientName = `${patient.firstname || ''} ${patient.surname || ''}`.trim();
-
-          if (patient.allergies?.length > 0) {
-            alerts.push({
-              id: `alert-${patient.patientId}-allergy`,
-              patientId: patient.patientId,
-              patientName: patientName, // Use combined name
-              message: `ALERGII: ${patient.allergies.join(", ")}`,
-              type: "warning",
-              priority: "medium",
-              category: "allergy",
-              date: new Date().toISOString(),
-            });
-          }
-
-          if (patient.heartIssues) {
-            alerts.push({
-              id: `alert-${patient.patientId}-heart`,
-              patientId: patient.patientId,
-              patientName: patientName, // Use combined name
-              message: "BOLI CARDIACE - Consultați cardiologul",
-              type: "danger",
-              priority: "high",
-              category: "medical_condition",
-              date: new Date().toISOString(),
-            });
-          }
-        });
-
-        return alerts;
-      } catch (fallbackError) {
-        return [];
-      }
+      return [];
     }
   }
 
@@ -433,7 +406,7 @@ class ApiService {
 
       return response.data.map(patient => ({
         patientId: patient.patientId,
-        patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(), // Combine AFTER backend decryption
+        patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(), // Combine here
         email: patient.email,
         telefon: patient.telefon,
         riskLevel: patient.riskLevel,
@@ -443,32 +416,7 @@ class ApiService {
       }));
     } catch (error) {
       console.warn("High risk patients failed:", error.message);
-
-      // Generate mock data based on existing patients
-      try {
-        const patientsResponse = await apiClient.get("/patients?include=questionnaires&limit=20");
-        const patients = patientsResponse.data.patients || [];
-
-        return patients
-            .filter(
-                (patient) =>
-                    patient.riskLevel === "high" ||
-                    patient.riskLevel === "medium" ||
-                    patient.allergies?.length > 0 ||
-                    patient.heartIssues ||
-                    patient.medicalConditions?.length > 0
-            )
-            .map((patient) => ({
-              patientId: patient.patientId,
-              patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(), // Combine AFTER backend decryption
-              riskLevel: patient.riskLevel || "medium",
-              riskDescription: this.generateRiskDescription(patient),
-              submissionDate: patient.lastQuestionnaireDate || patient.created_at,
-              priority: patient.heartIssues ? "high" : "medium",
-            }));
-      } catch (fallbackError) {
-        return [];
-      }
+      return [];
     }
   }
 
@@ -496,18 +444,21 @@ class ApiService {
     try {
       const response = await apiClient.get(`/patients?page=${page}&limit=${limit}&include=questionnaires`);
 
-      // ✅ Add necessary field mappings WITHOUT concatenating encrypted data
+      // Transform the data
       const transformedData = {
         ...response.data,
         patients: response.data.patients.map(patient => ({
           ...patient,
-          // ✅ Only add phone mapping, no concatenation of names
-          phone: patient.phone || patient.telefon,
+          fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+          patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+          doctor: patient.doctor ? {
+            ...patient.doctor,
+            fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim()
+          } : null
         }))
       };
 
       return transformedData;
-
     } catch (error) {
       console.error("Error fetching all patients:", error);
       return {
@@ -560,18 +511,33 @@ class ApiService {
       const patientResponse = await apiClient.get(`/patients/${patientId}`);
       console.log("Patient response:", patientResponse.data);
 
-      // ✅ Add necessary field mappings WITHOUT concatenating encrypted data
+      // Transform patient data
       const patient = patientResponse.data;
-      const transformed = {
+      const transformedPatient = {
         ...patient,
-        // ✅ Only add phone mapping, no concatenation of names
-        phone: patient.phone || patient.telefon,
+        fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+        doctor: patient.doctor ? {
+          ...patient.doctor,
+          fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim()
+        } : null
       };
 
-      return transformed;
+      // Try to get alerts
+      let alerts = [];
+      try {
+        const alertsResponse = await apiClient.get(`/patients/${patientId}/alerts`);
+        alerts = alertsResponse.data;
+      } catch (alertError) {
+        console.warn("Could not fetch patient alerts:", alertError.message);
+      }
 
+      return {
+        patient: transformedPatient,
+        alerts: alerts
+      };
     } catch (error) {
-      console.error("Error fetching patient profile:", error);
+      console.error("Error in getPatientProfile:", error);
       throw error;
     }
   }
@@ -584,17 +550,25 @@ class ApiService {
       const response = await apiClient.post("/reports/generate", {
         type: reportType,
         filters,
-        includeRealData: true,
       });
+
+      // Transform report data to combine firstname + surname
+      if (response.data.data && Array.isArray(response.data.data)) {
+        const transformedData = {
+          ...response.data,
+          data: response.data.data.map(item => ({
+            ...item,
+            patientName: `${item.firstname || ''} ${item.surname || ''}`.trim(),
+            fullName: `${item.firstname || ''} ${item.surname || ''}`.trim()
+          }))
+        };
+        return transformedData;
+      }
+
       return response.data;
     } catch (error) {
-      console.warn(
-          "Report generation failed, using fallback data:",
-          error.message
-      );
-
-      // Generate mock report data
-      return this.generateMockReport(reportType);
+      console.error("Error generating report:", error);
+      throw error;
     }
   }
 
@@ -677,17 +651,23 @@ class ApiService {
 
       console.log('Raw patient data from API:', response.data); // Debug
 
-      // ✅ FIXED: Add phone mapping but NO name concatenation
+      // Transform the data to combine firstname + surname into fullName
       const transformedData = {
         ...response.data,
         patients: response.data.patients.map(patient => {
           const transformed = {
             ...patient,
-            // ✅ Only add phone field mapping, no concatenation of encrypted names
-            phone: patient.phone || patient.telefon,
+            fullName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+            patientName: `${patient.firstname || ''} ${patient.surname || ''}`.trim(),
+            // Ensure phone field is available as both 'phone' and original field name
+            // phone: patient.phone || patient.telefon,
             telefon: patient.telefon,
-            // ✅ Keep doctor data as-is, let components handle concatenation after decryption
-            doctor: patient.doctor || null
+            doctor: patient.doctor ? {
+              ...patient.doctor,
+              fullName: `${patient.doctor.firstname || ''} ${patient.doctor.surname || ''}`.trim(),
+              firstName: patient.doctor.firstname,
+              lastName: patient.doctor.surname
+            } : null
           };
 
           console.log('Transformed patient:', transformed); // Debug
@@ -696,7 +676,6 @@ class ApiService {
       };
 
       return transformedData;
-
     } catch (error) {
       console.warn("Formatted patient list failed:", error.message);
       return {
@@ -707,6 +686,7 @@ class ApiService {
       };
     }
   }
+
 
   // **REAL-TIME DASHBOARD DATA WITH FALLBACKS**
 

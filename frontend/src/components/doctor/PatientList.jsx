@@ -79,12 +79,16 @@ class PatientList extends Component {
     applyFilters = ({ searchText = this.state.searchText, filters = this.state.filters } = {}) => {
         let filtered = [...this.state.patients];
 
-        // Text search
+        // Text search - FIXED: Use decrypted individual fields instead of fullName
         if (searchText) {
-            filtered = filtered.filter(patient =>
-                patient.fullName.toLowerCase().includes(searchText.toLowerCase()) ||
-                patient.email.toLowerCase().includes(searchText.toLowerCase())
-            );
+            filtered = filtered.filter(patient => {
+                // Create fullName from decrypted fields for search
+                const fullName = `${patient.firstname || ''} ${patient.surname || ''}`.trim();
+                const email = patient.email || '';
+
+                return fullName.toLowerCase().includes(searchText.toLowerCase()) ||
+                    email.toLowerCase().includes(searchText.toLowerCase());
+            });
         }
 
         // Apply filters
@@ -125,24 +129,12 @@ class PatientList extends Component {
             dataIndex: 'fullName',
             key: 'fullName',
             sorter: (a, b) => a.fullName.localeCompare(b.fullName),
-            render: (text, record) => {
-                // Create fullName from firstname + surname if it doesn't exist
-                const displayName = text || `${record.firstname || ''} ${record.surname || ''}`.trim();
-                console.log('Rendering patient name:', displayName, 'from record:', record); // Debug
-                return displayName || 'N/A';
-            }
         },
         {
             title: 'Doctor',
             dataIndex: 'doctor',
             key: 'doctor',
-            render: (doctor) => {
-                if (!doctor) return 'Nespecificat';
-                // Handle both old and new format
-                const doctorName = doctor.fullName ||
-                    `${doctor.firstName || doctor.firstname || ''} ${doctor.lastName || doctor.surname || ''}`.trim();
-                return doctorName || 'Nespecificat';
-            }
+            render: (doctor) => doctor ? `${doctor.firstName} ${doctor.lastName}` : 'Nespecificat',
         },
         {
             title: 'Email',
@@ -153,12 +145,6 @@ class PatientList extends Component {
             title: 'Telefon',
             dataIndex: 'phone',
             key: 'phone',
-            render: (phone, record) => {
-                // Try multiple field names for phone
-                const displayPhone = phone || record.telefon || record.telephone;
-                console.log('Rendering phone:', displayPhone, 'from record:', record); // Debug
-                return displayPhone || 'N/A';
-            }
         },
         {
             title: 'Nivel Risc',
