@@ -7,7 +7,7 @@
 ![Ant Design](https://img.shields.io/badge/Ant%20Design-5.0-0170FE?style=flat&logo=antdesign&logoColor=white)
 
 A comprehensive digital management system for dental clinics in Romania, featuring patient registration, medical questionnaires, and doctor dashboard interfaces.
-> **Note**: This project was developed with AI assistance as a learning and development tool, alongside traditional programming methods.
+> **Note**: This project was designed and implemented by me and my colleagues, with selective use of AI tools for research, refactoring, and productivity - similar to modern IDE assistance.
 
 **Team Project**: Developed collaboratively with 3 colleagues:
 - [elenamoglan](https://github.com/elenamoglan)
@@ -187,4 +187,3 @@ The backend provides RESTful API endpoints for:
 - Built with React and Node.js
 - UI components from Ant Design
 - Icons from Lucide React
-- Developed with AI assistance for enhanced learning
