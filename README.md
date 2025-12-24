@@ -10,9 +10,9 @@ A comprehensive digital management system for dental clinics, featuring patient 
 > **Note**: This project was developed with AI assistance as a learning and development tool, alongside traditional programming methods.
 
 **Team Project**: Developed collaboratively with 3 colleagues:
-- @elenamoglan
-- @qduke
-- @MarcoRO04
+- [@elenamoglan](https://github.com/elenamoglan)
+- [@qduke](https://github.com/qduke)
+- [@MarcoRO04](https://github.com/MarcoRO04)
 
 ## Overview
 
