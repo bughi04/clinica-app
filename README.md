@@ -1,12 +1,184 @@
-# React + Vite
+# Dental Point Clinic - Digital Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive digital management system for dental clinics, featuring patient registration, medical questionnaires, and doctor dashboard interfaces.
+> **Note**: This project was developed with AI assistance as a learning and development tool, alongside traditional programming methods.
 
-Currently, two official plugins are available:
+**Team Project**: Developed collaboratively with 3 colleagues:
+- @elenamoglan
+- @qduke
+- @MarcoRO04
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Overview
 
-## Expanding the ESLint configuration
+Dental Point Clinic is a full-stack web application designed to streamline dental clinic operations through digital patient management, medical history tracking, and GDPR-compliant data handling.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+**Frontend:**
+- React 18 with Vite
+- Ant Design UI components
+- TailwindCSS for styling
+- React Hook Form for form management
+- Axios for API communication
+
+**Backend:**
+- Node.js with Express
+- PostgreSQL database
+- Data encryption for sensitive information
+- RESTful API architecture
+
+**Testing:**
+- Jest for unit testing
+- React Testing Library
+- Test coverage for components and services
+
+## Key Features
+
+### Patient Interface
+- Patient registration and login system
+- Digital medical questionnaire (8 sections)
+- Auto-fill functionality for returning patients
+- Mobile-optimized tablet interface
+- Multilingual support (Romanian)
+
+### Doctor Interface
+- Secure authentication for medical staff
+- Real-time dashboard with statistics
+- Patient profile management
+- Medical risk assessment alerts
+- Report generation system
+- Patient search and filtering
+
+### Data Security
+- GDPR-compliant data processing
+- Encrypted patient information
+- Digital consent forms with signatures
+- Secure authentication system
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v16 or higher)
+- PostgreSQL (v12 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/bughi04/clinica-app.git
+cd clinica-app
+```
+
+2. Install backend dependencies:
+```bash
+cd backend
+npm install
+```
+
+3. Install frontend dependencies:
+```bash
+cd frontend
+npm install
+```
+
+4. Set up environment variables:
+   - Create `.env` files in both backend and frontend directories
+   - Configure database connection and API URLs
+
+5. Initialize the database:
+```bash
+cd backend
+npm run db:init
+```
+
+### Running the Application
+
+**Backend:**
+```bash
+cd backend
+npm start
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
+The application will be available at `http://localhost:5173` (frontend) and `http://localhost:3001` (backend API).
+
+## Testing
+
+Run the test suite:
+```bash
+# Frontend tests
+cd frontend
+npm test
+
+# Backend tests
+cd backend
+npm test
+```
+
+## Features in Detail
+
+### Medical Questionnaire
+- Comprehensive 8-section medical history form
+- Patient information and referral tracking
+- Dental examination records
+- General health assessment
+- Medical conditions tracking
+- Data processing consent
+- Multiple consent forms (general, pediatric, endodontic)
+
+### Doctor Dashboard
+- Patient statistics overview
+- Risk distribution analysis
+- Recent questionnaires tracking
+- High-priority medical alerts
+- Patient search functionality
+- Report generation
+
+### Security Features
+- GDPR-compliant data handling
+- Encrypted patient data
+- Secure authentication
+- Digital signature capture
+- Audit trail for consents
+
+## Demo Credentials
+
+**Patient Login:**
+- CNP: `5041129350010` (Demo Patient)
+
+**Doctor Login:**
+- Username: `dr.popescu`
+- Password: `password123`
+
+## Database Schema
+
+The application uses a PostgreSQL database with the following main tables:
+- `pacient` - Patient records
+- `chestionar` - Medical questionnaires
+- `date_medicale` - Dental records
+- `boli` - Medical conditions
+- `antecedente_medicale` - Medical history
+- `user` - Authentication
+- `dentist` - Doctor profiles
+
+## API Documentation
+
+The backend provides RESTful API endpoints for:
+- Patient management (`/api/patients`)
+- Questionnaires (`/api/questionnaires`)
+- Authentication (`/api/auth`)
+- Dashboard statistics (`/api/dashboard`)
+- Reports generation (`/api/reports`)
+
+## Acknowledgments
+
+- Built with React and Node.js
+- UI components from Ant Design
+- Icons from Lucide React
+- Developed with AI assistance for enhanced learning
