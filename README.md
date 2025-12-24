@@ -16,7 +16,7 @@ A comprehensive digital management system for dental clinics in Romania, featuri
 
 ## Overview
 
-Dental Point Clinic is a full-stack web application designed to streamline dental clinic operations through digital patient management, medical history tracking, and GDPR-compliant data handling.
+Dental Point Clinic is a full-stack web application designed to streamline dental clinic operations in Romania through digital patient management, medical history tracking, and GDPR-compliant data handling.
 
 ## Tech Stack
 
