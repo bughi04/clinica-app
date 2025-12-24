@@ -6,7 +6,7 @@
 ![Vite](https://img.shields.io/badge/Vite-6.3.5-646CFF?style=flat&logo=vite&logoColor=white)
 ![Ant Design](https://img.shields.io/badge/Ant%20Design-5.0-0170FE?style=flat&logo=antdesign&logoColor=white)
 
-A comprehensive digital management system for dental clinics, featuring patient registration, medical questionnaires, and doctor dashboard interfaces.
+A comprehensive digital management system for dental clinics in Romania, featuring patient registration, medical questionnaires, and doctor dashboard interfaces.
 > **Note**: This project was developed with AI assistance as a learning and development tool, alongside traditional programming methods.
 
 **Team Project**: Developed collaboratively with 3 colleagues:
