@@ -1,4 +1,10 @@
 # Dental Point Clinic - Digital Management System
+![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=flat&logo=react&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-16+-339933?style=flat&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4.18-000000?style=flat&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6.3.5-646CFF?style=flat&logo=vite&logoColor=white)
+![Ant Design](https://img.shields.io/badge/Ant%20Design-5.0-0170FE?style=flat&logo=antdesign&logoColor=white)
 
 A comprehensive digital management system for dental clinics, featuring patient registration, medical questionnaires, and doctor dashboard interfaces.
 > **Note**: This project was developed with AI assistance as a learning and development tool, alongside traditional programming methods.
