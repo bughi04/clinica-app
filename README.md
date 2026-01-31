@@ -11,7 +11,7 @@ A comprehensive digital management system for dental clinics in Romania, featuri
 
 **Team Project**: Developed collaboratively with 3 colleagues:
 - [elenamoglan](https://github.com/elenamoglan)
-- [qduke](https://github.com/qduke)
+- [david21-rs](https://github.com/david21-rs)
 - [MarcoRO04](https://github.com/MarcoRO04)
 
 ## Overview
